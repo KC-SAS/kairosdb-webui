@@ -1,0 +1,14 @@
+// Placez vos paramètres dans ce fichier pour remplacer les paramètres par défaut et les paramètres utilisateur.
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/*.js": {"when": "$(basename).ts"},
+        "**/*.map": {"when": "$(basename).map"},
+        "npm-debug.log.*":true
+    }
+,
+"typescript.check.workspaceVersion": false
+}
