@@ -60,7 +60,7 @@ export class DatePickerComponent implements OnInit{
     hidePopup(event) {
         this.dateModel = moment(this.dateObject).format("YYYY-MM-DD");
         this.showDatepicker = false;
-        this.dateModelChange.emit(event)
+        this.dateModelChange.emit(this.dateModel);
     }
 
     offClickHandler(event: any) {

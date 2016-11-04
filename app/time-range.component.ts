@@ -14,6 +14,10 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
     padding: 5px 5px;
   }
 
+  .picker-col * {
+    display: inline-flex;
+  }
+
   .timezone-col {
     width: 190px;
   }
@@ -40,7 +44,7 @@ export class TimeRangeComponent implements OnChanges{
   public timeStartRadioModel: string = 'Absolute';
   public timeStopRadioModel: string = 'None';
   public items: Array<string>;
-  public selected:string = '';
+  public timezone:string = '';
   public componentValid: boolean=true;
 
   @Input()
@@ -68,10 +72,6 @@ export class TimeRangeComponent implements OnChanges{
     //this.startRelative = {unit:'hours'};
   }
 
-  public typeaheadOnSelect(e: TypeaheadMatch): void {
-    console.log('Selected value: ', e.value);
-  }
-
   ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
     let hasStart = this.startRelative !== undefined || this.startAbsolute !== undefined;
     let absRelConflictStart = this.startRelative !== undefined && this.startAbsolute !== undefined;
@@ -89,11 +89,24 @@ export class TimeRangeComponent implements OnChanges{
     }
   }
 
+  defaultDate() {
+    let dateTimeObject;
+    if (this.timezone)
+      dateTimeObject = moment.tz(this.timezone);
+    else
+      dateTimeObject = moment();
+    dateTimeObject.hour(0);
+    dateTimeObject.minute(0);
+    dateTimeObject.second(0);
+    dateTimeObject.millisecond(0);
+    return dateTimeObject.valueOf();
+  }
+
   fixInvalid(){
     if(this.startRelative == undefined && this.startAbsolute == undefined){
-      this.startAbsolute = 0;
-      this.startAbsoluteChange.emit(this.startAbsolute);
-      this.timeStartRadioModel = "Absolute";
+      this.startRelative = {value:1,unit:'hours'};
+      this.startRelativeChange.emit(this.startRelative);
+      this.timeStartRadioModel = "Relative";
     }
     if(this.startRelative !== undefined && this.startAbsolute !== undefined){
       this.endRelative = undefined;
@@ -101,5 +114,11 @@ export class TimeRangeComponent implements OnChanges{
       this.timeStartRadioModel = "Absolute";
     }
   }
+
+  onTimezoneBlur(element) {
+    this.timezone = this.items.includes(element.value) ? element.value : '';
+    element.value=this.timezone;
+  }
+
 }
 

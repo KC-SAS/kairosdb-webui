@@ -24,7 +24,7 @@ import * as _ from 'lodash';
   `]
 })
 export class QueryComponent {
-    query: any = {start_absolute:0};
+    query: any = {start_relative:{value:1,unit:'hours'}};
 
     assignOrDelete(field, value){
         if(value===undefined || value==null){

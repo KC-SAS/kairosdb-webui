@@ -1,21 +1,21 @@
 <div class="panel panel-primary">
-<div class="panel-heading">Time range</div>
+<div class="panel-heading">Time range {{timezone}}</div>
 
 <div class="panel-body">
 <table *ngIf="componentValid">
 <tr>
 	<td class="label-col"><span >Start</span ></td>
     <td class="select-col"><div class="btn-group">
-        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startAbsolute=0;startAbsoluteChange.emit(startAbsolute);startRelativeChange.emit(undefined);" btnRadio="Absolute">Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={unit:'hours'};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
+        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startAbsolute=defaultDate();startAbsoluteChange.emit(startAbsolute);startRelativeChange.emit(undefined);" btnRadio="Absolute">Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={value:1, unit:'hours'};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
 	 </div></td>
 
 	<td class="picker-col">
 	<div *ngIf="timeStartRadioModel==='Absolute'">
-		<kairos-datetimepicker [timestamp]="startAbsolute"></kairos-datetimepicker>
+		<kairos-datetimepicker [timezone]="timezone" [(timestamp)]="startAbsolute" (timestampChange)="startAbsoluteChange.emit($event);"></kairos-datetimepicker>
 	</div>
 	<div *ngIf="timeStartRadioModel==='Relative'" class="input-group">
-        <kairos-relativepicker [model]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
+        <kairos-relativepicker [(model)]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
     </div><!-- /input-group -->
 </td>
 	<td class="timezone-col" rowspan="2">
@@ -24,11 +24,12 @@
               placeholder="Default Time Zone">
   		</ng-select>-->
 		<div class="form-group has-feedback">
-		<input [(ngModel)]="selected"
+		<input #timezoneField [ngModel]="timezone"
          [typeahead]="items"
 		 [typeaheadOptionsLimit]="10"
          [typeaheadMinLength]="0"
-         (typeaheadOnSelect)="typeaheadOnSelect($event)"
+		 (typeaheadOnSelect)="timezone=timezoneField.value"
+         (blur)="onTimezoneBlur(timezoneField)"
 		 placeholder="Default time zone"
          class="form-control">
 		 <i class="glyphicon glyphicon-menu-down form-control-feedback"></i>

@@ -4,14 +4,11 @@ import * as moment from 'moment-timezone';
 @Component({
     selector: 'kairos-datetimepicker',
     template: `
-    <div>
     	<kairos-datepicker [(dateModel)]="date" (dateModelChange)="updateTimestamp()"></kairos-datepicker>
 		<kairos-timepicker [(timeModel)]="time" (timeModelChange)="updateTimestamp()"></kairos-timepicker>
-    </div>
   `,
     styles: [`
-    * {
-        display: inline-flex;
+    kairos-datepicker {
         padding-right: 5px;
     }
   `],
@@ -30,15 +27,15 @@ export class DateTimePickerComponent implements OnChanges{
     
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if(changes['timestamp']){
-            let dateTimeObject;
-            if(this.timezone)
-                dateTimeObject =moment.tz(this.timestamp,this.timezone);
-            else
-                dateTimeObject =moment(this.timestamp);
-            this.date = dateTimeObject.format("YYYY-MM-DD");
-            this.time = dateTimeObject.format("hh:mm:ss.SSS");
-        }
+        console.log(changes['timezone']);
+        let dateTimeObject;
+        if (this.timezone)
+            dateTimeObject = moment.tz(this.timestamp, this.timezone);
+        else
+            dateTimeObject = moment(this.timestamp);
+        this.date = dateTimeObject.format("YYYY-MM-DD");
+        this.time = dateTimeObject.format("HH:mm:ss.SSS");
+
     }
 
     updateTimestamp(){
@@ -48,6 +45,7 @@ export class DateTimePickerComponent implements OnChanges{
         else
             dateTimeObject = moment(this.date + " " + this.time);
         this.timestamp = dateTimeObject.valueOf();
+        this.timestampChange.emit(this.timestamp);
 
     }
 

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, SimpleChanges, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, OnChanges, SimpleChange } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
 
@@ -30,7 +30,7 @@ import { ActivatedRoute, Params } from '@angular/router';
   `,
    styleUrls: ['app/time-picker.component.css']
 })
-export class TimePickerComponent implements OnInit {
+export class TimePickerComponent implements OnChanges {
 
     public hour: number;
     public minute: number;
@@ -49,10 +49,6 @@ export class TimePickerComponent implements OnInit {
         document.addEventListener('click', this.offClickHandler.bind(this));
     }
 
-    ngOnInit() {
-        this.onTextEdit(this.timeModel);
-    }
-
     showPopup() {
         this.showDatepicker = true;
     }
@@ -60,7 +56,7 @@ export class TimePickerComponent implements OnInit {
     hidePopup(event) {
         this.showDatepicker = false;
         //this.timeModel = event;
-        this.timeModelChange.emit(event)
+        this.timeModelChange.emit(this.timeModel)
     }
 
     onSliderChange(event?: Event, unit?: string) {
@@ -75,6 +71,12 @@ export class TimePickerComponent implements OnInit {
             + ("0" + this.minute).slice(-2)
             + ((secDefined || msDefined) ? ":" + ("0" + this.second).slice(-2) : "")
             + (msDefined ? "." + ("00" + this.millisecond).slice(-3) : "");
+    }
+
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if(changes['timeModel']){
+            this.onTextEdit(this.timeModel);
+        }
     }
 
     onTextEdit(fieldValue) {
