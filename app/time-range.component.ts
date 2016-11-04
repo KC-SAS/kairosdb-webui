@@ -14,11 +14,6 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
     padding: 5px 5px;
   }
 
-  .picker-col * {
-    display: inline-flex;
-    padding-right: 5px;
-  }
-
   .timezone-col {
     width: 190px;
   }
