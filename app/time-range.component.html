@@ -2,12 +2,12 @@
 <div class="panel-heading">Time range</div>
 
 <div class="panel-body">
-<table>
+<table *ngIf="componentValid">
 <tr>
 	<td class="label-col"><span >Start</span ></td>
     <td class="select-col"><div class="btn-group">
         <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startAbsolute=0;startAbsoluteChange.emit(startAbsolute);startRelativeChange.emit(undefined);" btnRadio="Absolute">Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
+		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={unit:'hours'};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
 	 </div></td>
 
 	<td class="picker-col">
@@ -56,5 +56,8 @@
 </tr>
 
 </table>
+
+<div *ngIf="!componentValid" class="alert alert-danger" role="alert" (click)="fixInvalid()">Invalid time range in Query Json. Click here to fix!</div>
+
 </div>
 </div>
