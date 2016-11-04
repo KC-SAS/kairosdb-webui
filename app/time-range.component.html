@@ -1,4 +1,3 @@
-
 <div class="panel panel-primary">
 <div class="panel-heading">Time range</div>
 
@@ -7,8 +6,8 @@
 <tr>
 	<td class="label-col"><span >Start</span ></td>
     <td class="select-col"><div class="btn-group">
-        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" btnRadio="Absolute">Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" btnRadio="Relative">Relative</label>
+        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startAbsolute=0;startAbsoluteChange.emit(startAbsolute);startRelativeChange.emit(undefined);" btnRadio="Absolute">Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
 	 </div></td>
 
 	<td class="picker-col">
@@ -17,13 +16,7 @@
 		<kairos-timepicker [timeModel]="'00:00'"></kairos-timepicker>
 	</div>
 	<div *ngIf="timeStartRadioModel==='Relative'" class="input-group">
-        <input type="text" style="width:50px" class="form-control" aria-label="..." >
-        <select style="width:200px" class="form-control" [(ngModel)]="mstep" >
-      		<option [value]="'HOUR'">HOUR</option>
-			<option [value]="'MINUTE'">MINUTE</option>
-			<option [value]="'SECOND'">SECOND</option>
-    	</select>
-		<input type="text" value="ago" style="width:50px" class="form-control" aria-label="..." disabled>
+        <kairos-relativepicker [model]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
     </div><!-- /input-group -->
 </td>
 	<td class="timezone-col" rowspan="2">
@@ -47,9 +40,8 @@
 <tr>
 	<td class="label-col"><span >Stop</span ></td>
     <td class="select-col"><div class="btn-group">
-        <label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Absolute">Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Relative">Relative</label>
-		<label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="None">None</label>
+        <label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Absolute" uncheckable>Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Relative" uncheckable>Relative</label>
 	 </div></td>
 
 	<td class="picker-col">
@@ -58,13 +50,7 @@
 		<kairos-timepicker [timeModel]="'00:00'"></kairos-timepicker>
 	</div>
 	<div *ngIf="timeStopRadioModel==='Relative'" class="input-group">
-      	<input style="width:50px" type="text" class="form-control" aria-label="...">
-    	<select style="width:200px" class="form-control" [(ngModel)]="mstep" >
-      		<option [value]="'HOUR'">HOUR</option>
-			<option [value]="'MINUTE'">MINUTE</option>
-			<option [value]="'SECOND'">SECOND</option>
-    	</select>
-		<input type="text" value="ago" style="width:50px" class="form-control" aria-label="..." disabled>
+      	<kairos-relativepicker></kairos-relativepicker>
     </div><!-- /input-group -->
 	</td>
 </tr>

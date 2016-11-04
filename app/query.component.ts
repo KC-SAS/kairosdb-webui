@@ -1,70 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment-timezone';
-import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
+import { Component } from '@angular/core';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'query-builder',
-  templateUrl: 'app/query.component.html',
+  template: `
+    <div class="kairos-container">
+        <kairos-timerange [startRelative]="query.start_relative" (startRelativeChange)="assignOrDelete('start_relative',$event)"></kairos-timerange>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Json Query</div>
+            <textarea (ngModelChange)="parse($event)" [ngModel]="query | json" class="form-control" rows="10"></textarea>
+        </div>
+    </div>
+  `,
   styles: [`
-  .panel {
-    margin: 5px 5px;
-    max-width: 1000px
-  }
-  td {
-    padding: 5px 5px;
-  }
-  tr {
-    padding: 5px 5px;
-  }
-
-
-  .picker-col * {
-    display: inline-block;
-  }
-
-  .picker-col div {
-    margin: 0px;
-    padding: 0px;
-  }
-
-  .timezone-col {
-    width: 190px;
-  }
-  .label-col {
-    width: 50px;
-  }
-  .select-col {
-    width: 230px;
-  }
-  
-  span {
-    display: block;
-    text-align: left;
-  }
-
-  table {
-    width: 100%;
-  }
-
-
-
-  .form-control[disabled] {
-    cursor: default;
-  }
-
+    .kairos-container {
+        margin: 5px 5px;
+        max-width: 1000px;
+    }
   `]
 })
 export class QueryComponent {
-  public timeStartRadioModel: string = 'Absolute';
-  public timeStopRadioModel: string = 'None';
-  public items: Array<string>;
-  public selected:string = '';
+    query: any = {};
 
-  public constructor() {
-    this.items = moment.tz.names();
-  }
+    assignOrDelete(field, value){
+        if(value===undefined || value==null){
+            _.unset(this.query,field);
+        }
+        else{
+            _.set(this.query,field, value);
+        }
+    }
 
-  public typeaheadOnSelect(e: TypeaheadMatch): void {
-    console.log('Selected value: ', e.value);
-  }
+    parse(jsonQuery: string){
+        try{
+            this.query = JSON.parse(jsonQuery);
+        }
+        catch(e){/* I don't CARE !!! */}
+    }
+
 }

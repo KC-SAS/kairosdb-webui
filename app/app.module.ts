@@ -9,13 +9,15 @@ import { AppRoutingModule } from './app-routing.module';
 // Imports for loading & configuring the in-memory web api
 import { TimePickerComponent } from './time-picker.component';
 import { DatePickerComponent } from './date-picker.component';
+import { RelativePickerComponent } from './relative-picker.component';
+import { TimeRangeComponent } from './time-range.component';
 import { DatepickerModule, AlertModule, ButtonsModule, TypeaheadModule  } from 'ng2-bootstrap/ng2-bootstrap';
 //import { SelectModule } from 'ng2-select';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
                   DatepickerModule, AlertModule, ButtonsModule, TypeaheadModule ],
-  declarations: [ AppComponent, TimePickerComponent, DatePickerComponent, QueryComponent ],
+  declarations: [ AppComponent, TimePickerComponent, DatePickerComponent, RelativePickerComponent, TimeRangeComponent, QueryComponent],
   bootstrap:    [ AppComponent ]
   // providers:    [ HeroService ]
 })
