@@ -7,25 +7,25 @@ import { ActivatedRoute, Params } from '@angular/router';
     template: `
   <div class="input-group">
 	<span class="input-group-addon" id="time">Time</span>
-    <input #timeField aria-describedby="time" [ngModel]="timeModel" class="form-control" (focus)="showPopup()" (keyup)="onTextEdit(timeField.value)" (blur)="onBlur()"/>
+    <input #timeField aria-describedby="time" [ngModel]="timeModel" class="form-control" (focus)="showPopup()" (keyup)="onTextEdit(timeField.value)" (blur)="onBlur(timeField)"/>
   </div>
   <div class="popup" *ngIf="showDatepicker">
     <label class="hourLabel">Hour:</label>
     <input #hours class="hourInput"
            (ngModelChange)="onSliderChange($event,'hour')"
-           type="range" min="0" max="23" [ngModel]="hour" />
+           type="range" min="0" max="23" [(ngModel)]="hour" />
     <label class="minutesLabel">Min:</label>
     <input #minutes class="minutesInput"
            (ngModelChange)="onSliderChange($event,'minute')"
-           type="range" min="0" max="59" [ngModel]="minute"/>
+           type="range" min="0" max="59" [(ngModel)]="minute"/>
     <label class="secondsLabel">Sec:</label>
     <input #seconds class="secondsInput"
            (ngModelChange)="onSliderChange($event,'second')"
-           type="range" min="0" max="59" [ngModel]="second"/>
+           type="range" min="0" max="59" [(ngModel)]="second"/>
     <label class="millisecondsLabel">Ms:</label>
     <input #milliseconds class="millisecondsInput"
            (ngModelChange)="onSliderChange($event,'millisecond')"
-           type="range" min="0" max="999" step="10" [ngModel]="millisecond"/>
+           type="range" min="0" max="999" step="10" [(ngModel)]="millisecond"/>
   </div>
   `,
    styleUrls: ['app/time-picker.component.css']
@@ -59,10 +59,7 @@ export class TimePickerComponent implements OnChanges {
         this.timeModelChange.emit(this.timeModel)
     }
 
-    onSliderChange(event?: Event, unit?: string) {
-        if (event && unit) {
-            this[unit] = event;
-        }
+    onSliderChange() {
         let secDefined = this.second && this.second != 0;
         let msDefined = this.millisecond && this.millisecond != 0;
 
@@ -108,12 +105,14 @@ export class TimePickerComponent implements OnChanges {
         }
     }
 
-    onBlur() {
+    onBlur(timeField) {
+        console.log('onBlur');
         this.hour = Math.min(23, this.hour);
         this.minute = Math.min(59, this.minute);
         this.second = Math.min(59, this.second);
         this.millisecond = Math.min(999, this.millisecond);
         this.onSliderChange();
+        timeField.value=this.timeModel;
     }
 
     offClickHandler(event: any) {

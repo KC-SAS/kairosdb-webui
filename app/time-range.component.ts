@@ -136,12 +136,13 @@ export class TimeRangeComponent implements OnChanges {
   onRadioClick(startOrEnd: string) {
     let absolute = startOrEnd+'Absolute';
     let relative = startOrEnd+'Relative';
-    if (this.timeEndRadioModel == 'Absolute') {
+    let radioModel = this['time'+startOrEnd.charAt(0).toUpperCase()+startOrEnd.slice(1)+'RadioModel'];
+    if (radioModel == 'Absolute') {
       this[absolute] = this.defaultDate();
       this[relative] = undefined;
 
     }
-    else if (this.timeEndRadioModel == 'Relative') {
+    else if (radioModel == 'Relative') {
       this[relative] = { value: 1, unit: 'hours' };
       this[absolute] = undefined;
 
