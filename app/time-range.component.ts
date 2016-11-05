@@ -40,12 +40,16 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
   }
   `]
 })
-export class TimeRangeComponent implements OnChanges{
+export class TimeRangeComponent implements OnChanges {
   public timeStartRadioModel: string = 'Absolute';
-  public timeStopRadioModel: string = 'None';
+  public timeEndRadioModel: string = 'None';
   public items: Array<string>;
-  public timezone:string = '';
-  public componentValid: boolean=true;
+  public componentValid: boolean = true;
+
+  @Input()
+  public timezone: string;
+  @Output()
+  timezoneChange = new EventEmitter<string>();
 
   @Input()
   startRelative: any;
@@ -79,12 +83,21 @@ export class TimeRangeComponent implements OnChanges{
 
     this.componentValid = hasStart && !absRelConflictStart && !absRelConflictEnd;
 
-    if(this.componentValid){
-      if(this.startRelative !== undefined){
+    if (this.componentValid) {
+      if (this.startRelative !== undefined) {
         this.timeStartRadioModel = "Relative";
       }
-      else if(this.startAbsolute !== undefined){
+      else if (this.startAbsolute !== undefined) {
         this.timeStartRadioModel = "Absolute";
+      }
+      if (this.endRelative !== undefined) {
+        this.timeEndRadioModel = "Relative";
+      }
+      else if (this.endAbsolute !== undefined) {
+        this.timeEndRadioModel = "Absolute";
+      }
+      else{
+        this.timeEndRadioModel = undefined;
       }
     }
   }
@@ -102,22 +115,50 @@ export class TimeRangeComponent implements OnChanges{
     return dateTimeObject.valueOf();
   }
 
-  fixInvalid(){
-    if(this.startRelative == undefined && this.startAbsolute == undefined){
-      this.startRelative = {value:1,unit:'hours'};
+  fixInvalid() {
+    if (this.startRelative == undefined && this.startAbsolute == undefined) {
+      this.startRelative = { value: 1, unit: 'hours' };
       this.startRelativeChange.emit(this.startRelative);
       this.timeStartRadioModel = "Relative";
     }
-    if(this.startRelative !== undefined && this.startAbsolute !== undefined){
-      this.endRelative = undefined;
-      this.endRelativeChange.emit(this.endRelative);
+    if (this.startRelative !== undefined && this.startAbsolute !== undefined) {
+      this.startRelative = undefined;
+      this.startRelativeChange.emit(this.startRelative);
       this.timeStartRadioModel = "Absolute";
     }
+    if (this.endRelative !== undefined && this.endAbsolute !== undefined) {
+      this.endRelative = undefined;
+      this.endRelativeChange.emit(this.endRelative);
+      this.timeEndRadioModel = "Absolute";
+    }
+  }
+
+  onRadioClick(startOrEnd: string) {
+    let absolute = startOrEnd+'Absolute';
+    let relative = startOrEnd+'Relative';
+    if (this.timeEndRadioModel == 'Absolute') {
+      this[absolute] = this.defaultDate();
+      this[relative] = undefined;
+
+    }
+    else if (this.timeEndRadioModel == 'Relative') {
+      this[relative] = { value: 1, unit: 'hours' };
+      this[absolute] = undefined;
+
+    }
+    else {
+      this[relative] = undefined;
+      this[absolute] = undefined;
+    }
+    this[relative+'Change'].emit(this[relative]);
+    this[absolute+'Change'].emit(this[absolute]);
+
   }
 
   onTimezoneBlur(element) {
     this.timezone = this.items.includes(element.value) ? element.value : '';
-    element.value=this.timezone;
+    element.value = this.timezone;
+    this.timezoneChange.emit(this.timezone);
   }
 
 }

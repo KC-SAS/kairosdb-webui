@@ -27,7 +27,6 @@ export class DateTimePickerComponent implements OnChanges{
     
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        console.log(changes['timezone']);
         let dateTimeObject;
         if (this.timezone)
             dateTimeObject = moment.tz(this.timestamp, this.timezone);

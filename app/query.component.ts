@@ -8,6 +8,9 @@ import * as _ from 'lodash';
         <kairos-timerange 
         [startRelative]="query.start_relative" (startRelativeChange)="assignOrDelete('start_relative',$event)"
         [startAbsolute]="query.start_absolute" (startAbsoluteChange)="assignOrDelete('start_absolute',$event)"
+        [endRelative]="query.end_relative" (endRelativeChange)="assignOrDelete('end_relative',$event)"
+        [endAbsolute]="query.end_absolute" (endAbsoluteChange)="assignOrDelete('end_absolute',$event)"
+        [timezone]="query.time_zone" (timezoneChange)="assignOrDelete('time_zone',$event)"
         >
         </kairos-timerange>
         <div class="panel panel-primary">
@@ -27,7 +30,7 @@ export class QueryComponent {
     query: any = {start_relative:{value:1,unit:'hours'}};
 
     assignOrDelete(field, value){
-        if(value===undefined || value==null){
+        if(value===undefined || value===null || value===''){
             _.unset(this.query,field);
         }
         else{

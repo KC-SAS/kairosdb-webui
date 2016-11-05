@@ -75,6 +75,10 @@ export class TimePickerComponent implements OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if(changes['timeModel']){
+            if(this.timeModel.length===12 && this.timeModel.substr(this.timeModel.length-4)=='.000')
+                this.timeModel=this.timeModel.substr(0,this.timeModel.length-4);
+            if(this.timeModel.length===8 && this.timeModel.substr(this.timeModel.length-3)==':00')
+                this.timeModel=this.timeModel.substr(0,this.timeModel.length-3);
             this.onTextEdit(this.timeModel);
         }
     }

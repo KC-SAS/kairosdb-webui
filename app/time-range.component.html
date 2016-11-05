@@ -6,31 +6,23 @@
 <tr>
 	<td class="label-col"><span >Start</span ></td>
     <td class="select-col"><div class="btn-group">
-        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startAbsolute=defaultDate();startAbsoluteChange.emit(startAbsolute);startRelativeChange.emit(undefined);" btnRadio="Absolute">Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="startRelative={value:1, unit:'hours'};startRelativeChange.emit(startRelative);startAbsoluteChange.emit(undefined);" btnRadio="Relative">Relative</label>
+        <label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="onRadioClick('start')" btnRadio="Absolute">Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeStartRadioModel" (ngModelChange)="onRadioClick('start')" btnRadio="Relative">Relative</label>
 	 </div></td>
 
 	<td class="picker-col">
-	<div *ngIf="timeStartRadioModel==='Absolute'">
-		<kairos-datetimepicker [timezone]="timezone" [(timestamp)]="startAbsolute" (timestampChange)="startAbsoluteChange.emit($event);"></kairos-datetimepicker>
-	</div>
-	<div *ngIf="timeStartRadioModel==='Relative'" class="input-group">
-        <kairos-relativepicker [(model)]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
-    </div><!-- /input-group -->
-</td>
+		<kairos-datetimepicker *ngIf="timeStartRadioModel==='Absolute'" [timezone]="timezone" [(timestamp)]="startAbsolute" (timestampChange)="startAbsoluteChange.emit($event);"></kairos-datetimepicker>
+        <kairos-relativepicker *ngIf="timeStartRadioModel==='Relative'" [(model)]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
+	</td>
 	<td class="timezone-col" rowspan="2">
-		<!--<ng-select [allowClear]="true"
-              [items]="items"
-              placeholder="Default Time Zone">
-  		</ng-select>-->
 		<div class="form-group has-feedback">
 		<input #timezoneField [ngModel]="timezone"
          [typeahead]="items"
 		 [typeaheadOptionsLimit]="10"
          [typeaheadMinLength]="0"
-		 (typeaheadOnSelect)="timezone=timezoneField.value"
+		 (typeaheadOnSelect)="timezone=timezoneField.value;timezoneChange.emit(timezone);"
          (blur)="onTimezoneBlur(timezoneField)"
-		 placeholder="Default time zone"
+		 placeholder="Browser time zone"
          class="form-control">
 		 <i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
 		</div>
@@ -40,17 +32,17 @@
 <tr>
 	<td class="label-col"><span >Stop</span ></td>
     <td class="select-col"><div class="btn-group">
-        <label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Absolute" uncheckable>Absolute</label>
-		<label class="btn btn-default" [(ngModel)]="timeStopRadioModel" btnRadio="Relative" uncheckable>Relative</label>
+        <label class="btn btn-default" [(ngModel)]="timeEndRadioModel" (ngModelChange)="onRadioClick('end')" btnRadio="Absolute" uncheckable>Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeEndRadioModel" (ngModelChange)="onRadioClick('end')" btnRadio="Relative" uncheckable>Relative</label>
+		<!--
+		<label class="btn btn-default" [(ngModel)]="timeEndRadioModel" btnRadio="Absolute" uncheckable>Absolute</label>
+		<label class="btn btn-default" [(ngModel)]="timeEndRadioModel" btnRadio="Relative" uncheckable>Relative</label>
+		-->
 	 </div></td>
 
 	<td class="picker-col">
-	<div *ngIf="timeStopRadioModel==='Absolute'">
-		<kairos-datetimepicker [timestamp]="endAbsolute"></kairos-datetimepicker>
-	</div>
-	<div *ngIf="timeStopRadioModel==='Relative'" class="input-group">
-      	<kairos-relativepicker></kairos-relativepicker>
-    </div><!-- /input-group -->
+		<kairos-datetimepicker *ngIf="timeEndRadioModel==='Absolute'" [timezone]="timezone" [(timestamp)]="endAbsolute" (timestampChange)="endAbsoluteChange.emit($event);"></kairos-datetimepicker>
+        <kairos-relativepicker *ngIf="timeEndRadioModel==='Relative'" [(model)]="endRelative" (modelChange)="endRelativeChange.emit($event);"></kairos-relativepicker>
 	</td>
 </tr>
 
