@@ -4,10 +4,11 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 
 @Component({
   selector: 'kairos-timerange',
-  templateUrl: 'app/time-range.component.html',
+  templateUrl: 'app/time/time-range.component.html',
   styles: [`
   td {
-    padding: 5px 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 
   tr {
@@ -27,7 +28,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
   }
 
   .select-col {
-    width: 160px;
+    width: 170px;
   }
   
   span {
@@ -156,7 +157,7 @@ export class TimeRangeComponent implements OnChanges {
 
   }
 
-  onTimezoneBlur(element) {
+  onTimezoneBlur(element: HTMLInputElement) {
     this.timezone = this.items.includes(element.value) ? element.value : '';
     element.value = this.timezone;
     this.timezoneChange.emit(this.timezone);

@@ -13,8 +13,14 @@ import * as _ from 'lodash';
         [timezone]="query.time_zone" (timezoneChange)="assignOrDelete('time_zone',$event)"
         >
         </kairos-timerange>
+        <accordion [closeOthers]="true" >
+            <accordion-group [isOpen]="true" panelClass="panel-primary">
+                <div accordion-heading>Metric</div>
+                <kairos-metric></kairos-metric>
+            </accordion-group>
+        </accordion>
         <div class="panel panel-primary">
-            <div class="panel-heading">Json Query</div>
+            <div class="panel-heading"><h4 class="panel-title">Json Query</h4></div>
             <textarea (ngModelChange)="parse($event)" [ngModel]="query | json" class="form-control" rows="10"></textarea>
         </div>
     </div>
@@ -23,6 +29,10 @@ import * as _ from 'lodash';
     .kairos-container {
         margin: 5px 5px;
         max-width: 1000px;
+    }
+
+    accordion-group:last-child >>> .panel{
+        margin-bottom: 20px;
     }
   `]
 })
@@ -42,7 +52,9 @@ export class QueryComponent {
         try{
             this.query = JSON.parse(jsonQuery);
         }
-        catch(e){/* I don't CARE !!! */}
+        catch(e){
+            // TODO display 'invalid json'
+        }
     }
 
 }

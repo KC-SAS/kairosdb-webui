@@ -6,20 +6,17 @@ import { AppComponent }   from './app.component';
 import { QueryComponent } from './query.component';
 import { AppRoutingModule } from './app-routing.module';
 
-// Imports for loading & configuring the in-memory web api
-import { TimePickerComponent } from './time-picker.component';
-import { DatePickerComponent } from './date-picker.component';
-import { DateTimePickerComponent } from './datetime-picker.component';
-import { RelativePickerComponent } from './relative-picker.component';
-import { TimeRangeComponent } from './time-range.component';
-import { DatepickerModule, AlertModule, ButtonsModule, TypeaheadModule  } from 'ng2-bootstrap/ng2-bootstrap';
-//import { SelectModule } from 'ng2-select';
+import { QueryService } from './query.service';
+
+import { MetricComponent } from './metric.component';
+import { AlertModule, ButtonsModule, TypeaheadModule, AccordionModule  } from 'ng2-bootstrap/ng2-bootstrap';
+import { TimeRangeModule } from './time/time-range.module';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
-                  DatepickerModule, AlertModule, ButtonsModule, TypeaheadModule ],
-  declarations: [ AppComponent, TimePickerComponent, DatePickerComponent, DateTimePickerComponent, RelativePickerComponent, TimeRangeComponent, QueryComponent],
-  bootstrap:    [ AppComponent ]
-  // providers:    [ HeroService ]
+                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule ],
+  declarations: [ AppComponent, QueryComponent, MetricComponent],
+  bootstrap:    [ AppComponent ],
+  providers:    [ QueryService ]
 })
 export class AppModule { }

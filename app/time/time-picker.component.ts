@@ -28,7 +28,7 @@ import { ActivatedRoute, Params } from '@angular/router';
            type="range" min="0" max="999" step="10" [(ngModel)]="millisecond"/>
   </div>
   `,
-   styleUrls: ['app/time-picker.component.css']
+   styleUrls: ['app/time/time-picker.component.css']
 })
 export class TimePickerComponent implements OnChanges {
 
@@ -105,8 +105,7 @@ export class TimePickerComponent implements OnChanges {
         }
     }
 
-    onBlur(timeField) {
-        console.log('onBlur');
+    onBlur(timeField: HTMLInputElement) {
         this.hour = Math.min(23, this.hour);
         this.minute = Math.min(59, this.minute);
         this.second = Math.min(59, this.second);
