@@ -2,106 +2,8 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
+import { TagFilterComponent } from './tag-filter.component';
 import * as _ from 'lodash';
-
-
-let labelStyles = `
-  .ui-select-toggle {
-    position: relative;
-  }
-  
-  /* Fix Bootstrap dropdown position when inside a input-group */
-  .input-group > .dropdown {
-    /* Instead of relative */
-    position: static;
-  }
-  
-  .ui-select-match > .btn {
-    /* Instead of center because of .btn */
-    text-align: left !important;
-  }
-  
-  .ui-select-match > .caret {
-    position: absolute;
-    top: 45%;
-    right: 15px;
-  }
-  
-  .ui-disabled {
-    background-color: #eceeef;
-    border-radius: 4px;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    opacity: 0.6;
-    top: 0;
-    left: 0;
-    cursor: not-allowed;
-  }
-  
-  .ui-select-choices {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
-    margin-top: 0;
-  }
-  
-  .ui-select-multiple .ui-select-choices {
-    margin-top: 1px;
-  }
-  .ui-select-choices-row>a {
-      display: block;
-      padding: 3px 20px;
-      clear: both;
-      font-weight: 400;
-      line-height: 1.42857143;
-      color: #333;
-      white-space: nowrap;
-  }
-  .ui-select-choices-row.active>a {
-      color: #fff;
-      text-decoration: none;
-      outline: 0;
-      background-color: #428bca;
-  }
-  
-  .ui-select-multiple {
-    padding-bottom:2px;
-    padding-top:4px;
-    min-width: 200px;
-    max-width: 600px;
-    height: auto;
-  }
-  
-  .ui-select-multiple input.ui-select-search {
-    background-color: transparent !important; /* To prevent double background when disabled */
-    border: none;
-    outline: none;
-    box-shadow: none;
-    height: 1.6666em;
-    padding: 0;
-    margin-bottom: 3px;
-    
-  }
-  .ui-select-match .close {
-      font-size: 1.6em;
-      line-height: 0.75;
-  }
-  
-  .ui-select-multiple .ui-select-match-item {
-    outline: 0;
-    margin: 0 3px 3px 0;
-  }
-  .ui-select-toggle > .caret {
-      position: absolute;
-      height: 10px;
-      top: 50%;
-      right: 10px;
-      margin-top: -2px;
-  }
-`;
 
 @Component({
     selector: 'kairos-metric',
@@ -136,59 +38,22 @@ let labelStyles = `
 </table>
 <div class="category-header">
     <h5 class="category-title">Tags</h5> 
-    <button type="button" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
+    <button type="button" class="btn btn-default category-add" (click)="addNewTagFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+    <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames.length>0">
+        <span class="glyphicon glyphicon-remove"></span>
+        Duplicated tag name <em>{{duplicatedTagNames.join()}}</em>. <a (click)=mergeTags()>Click here to merge</a>
+    </div>
 </div>
-<div class="form-inline form-group category-section">
-    <div class="has-feedback form-group">
-            <label>Name</label>
-		    <input
-            [(ngModel)]="tagName"
-            [typeahead]="tagNames"
-		    [typeaheadOptionsLimit]="10"
-            [typeaheadMinLength]="0"
-            (typeaheadOnSelect)="onTagNameUpdate();"
-            (blur)="onTagNameUpdate()"
-		    placeholder="Enter tag name"
-            class="form-control ui-select-search">
-		    <i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
-    </div>
-    <div class="form-group">
-    <label>Value</label>
-    <div class="has-feedback ui-select-container ui-select-multiple dropdown form-control open">
-        <span class="ui-select-match">
-        <span *ngFor="let a of selectedTagValues">
-            <span class="ui-select-match-item btn btn-default btn-secondary btn-xs"
-                  tabindex="-1"
-                  type="button"
-                  [ngClass]="{'btn-default': true}">
-               <a class="close"
-                  style="margin-left: 5px; padding: 0;"
-                  (click)="removeSelectedTag(a)">&times;</a>
-               <span>{{a}}</span>
-           </span>
-        </span>
-        </span>
-  	    <input
-            #tagvaluefield
-            [(ngModel)]="tagValue"
-            [typeahead]="unselectedTagValues"
-		    [typeaheadOptionsLimit]="10"
-            [typeaheadMinLength]="0"
-            (typeaheadOnSelect)="addSelectedTag($event.value);tagvaluefield.value=''"
-		    placeholder="Enter tag value"
-            class="form-control ui-select-search">
-		<i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
-    </div>
-    </div>
-    <a class="close category-delete"
-        (click)="remove(a)">&times;
-    </a>
-</div>
-
-
-        
+<kairos-tag-filter *ngFor="let selectedTag of selectedTagArray; let idx = index" 
+    [(tagName)]="selectedTagArray[idx].name" 
+    (tagNameChange)="update()"
+    [(selectedTagValues)]="selectedTagArray[idx].values" 
+    (selectedTagValuesChange)="update()"
+    [tagValuesForNames]="tagValuesForNames"
+    (delete)="selectedTagArray.splice(idx,1);"
+></kairos-tag-filter> 
   `,
-    styles: [labelStyles, `
+    styles: [`
     td {
         padding: 5px 5px;
     }
@@ -203,7 +68,7 @@ let labelStyles = `
 
     .category-title{
         display: inline;
-        padding-right: 5px;
+        margin-bottom: 0px;
         vertical-align: middle;
     }
 
@@ -212,6 +77,13 @@ let labelStyles = `
         font-size: 12px;
         padding: 3px;
         
+    }
+
+    .category-error {
+        display: inline;
+        margin-left: 5px;
+        color: #a94442;
+        padding: 5px;
     }
 
     .category-header {
@@ -267,41 +139,47 @@ export class MetricComponent implements OnChanges, OnInit {
     @Output()
     metricChange = new EventEmitter<any>();
 
+    @Input()
+    public selectedTagObject: {};
+    @Output()
+    public selectedTagObjectChange = new EventEmitter<{}>();
+
     public metricNames: string[];
+
+    @Input()
     public metricName: string;
+    @Output()
+    public metricNameChange = new EventEmitter<string>();
+
     private metricNameSubject: Subject<string>;
 
-    public tagValuesForNames: any;
-    public tagNames: string[];
-    public tagName: string;
-    public unselectedTagValues: string[];
-    public selectedTagValues: string[];
+    public tagValuesForNames: {};
+    public selectedTagArray: Array<{}>;
 
     public refreshingMetricNames: boolean;
 
-    
-
-
-
+    public duplicatedTagNames: string[];
 
     public constructor(private queryService: QueryService) {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
-        this.tagNames = [];
-        this.unselectedTagValues = [];
-        this.selectedTagValues = [];
+        this.selectedTagArray = [];
+        this.duplicatedTagNames = [];
+        this.selectedTagObject = {};
+        this.tagValuesForNames = {};
     }
 
-
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-
+        if (changes['selectedTagObject']) {
+            this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
+        }
     }
 
     ngOnInit() {
         this.metricNameSubject = new Subject<string>();
-        this.metricNameSubject.debounceTime(500).filter(value => value !== undefined && value !== null && value !== '').subscribe(
+        this.metricNameSubject.debounceTime(400).filter(value => value !== undefined && value !== null && value !== '').subscribe(
             metricName => this.queryService.getTagNameValues(metricName).then(
-                resp => { this.tagValuesForNames = resp; this.tagNames = _.keys(resp) || [];}
+                resp => { this.tagValuesForNames = resp; }
             )
         );
         this.refreshMetricNames();
@@ -313,36 +191,52 @@ export class MetricComponent implements OnChanges, OnInit {
         this.metricNameSubject.next(this.metricName);
     }
 
-    removeSelectedTag(item: string) {
-        let index = this.selectedTagValues.indexOf(item);
-        this.selectedTagValues.splice(index, 1);
-        if(this.tagValuesForNames 
-        && this.tagValuesForNames[this.tagName] 
-        && this.tagValuesForNames[this.tagName].includes(item)
-        && !this.unselectedTagValues.includes(item)){
-            this.unselectedTagValues.push(item);
-        }
-        
-    }
-
-    addSelectedTag(item: string) {
-        this.selectedTagValues.push(item);
-        let index = this.unselectedTagValues.indexOf(item);
-        this.unselectedTagValues.splice(index, 1);
-    }
-
     onMetricNameUpdate() {
         this.metricNameSubject.next(this.metricName);
     }
 
-    onTagNameUpdate() {
-        if (this.tagValuesForNames && this.tagValuesForNames[this.tagName]) {
-            this.unselectedTagValues = _.map<string,string>(this.tagValuesForNames[this.tagName],_.identity); // copy array but not elements (_.clone to copy elements)
-            _.difference(this.unselectedTagValues,this.selectedTagValues);
+    addNewTagFilter() {
+        this.selectedTagArray.push({ name: '', values: [] });
+    }
+
+    update() {
+        let seenOnce = {};
+        let seenTwice = {};
+        this.selectedTagArray.forEach(function (value, index) {
+            let name = value['name'];
+            if (seenOnce[name]) {
+                seenTwice[name] = true;
+            }
+            else {
+                seenOnce[name] = true;
+            }
+        });
+        this.duplicatedTagNames = _.keys(seenTwice);
+        if (this.duplicatedTagNames.length === 0) {
+            this.selectedTagObject = this.selectedTagListToObject();
+            this.selectedTagObjectChange.emit(this.selectedTagObject);
         }
-        else {
-            this.unselectedTagValues = [];
-        }
+    }
+
+    mergeTags() {
+        this.selectedTagObject = this.selectedTagListToObject();
+        this.selectedTagObjectChange.emit(this.selectedTagObject);
+        this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
+        this.duplicatedTagNames = [];
+    }
+
+    private selectedTagListToObject(): {} {
+        let mergedSelectedTags = {};
+        this.selectedTagArray.forEach(function (value, index) {
+            let name = value['name'];
+            if (mergedSelectedTags[name]) {
+                mergedSelectedTags[name] = _.concat(mergedSelectedTags[name],value['values']);
+            }
+            else {
+                mergedSelectedTags[name] = value['values'];
+            }
+        });
+        return _.mapValues(mergedSelectedTags, _.uniq);
     }
 
 }

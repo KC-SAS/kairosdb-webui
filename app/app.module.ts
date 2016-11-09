@@ -9,13 +9,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { QueryService } from './query.service';
 
 import { MetricComponent } from './metric.component';
+import { TagFilterComponent } from './tag-filter.component';
+
 import { AlertModule, ButtonsModule, TypeaheadModule, AccordionModule  } from 'ng2-bootstrap/ng2-bootstrap';
 import { TimeRangeModule } from './time/time-range.module';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
                   TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule ],
-  declarations: [ AppComponent, QueryComponent, MetricComponent],
+  declarations: [ AppComponent, QueryComponent, MetricComponent, TagFilterComponent ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService ]
 })

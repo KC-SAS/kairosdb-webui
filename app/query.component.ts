@@ -16,7 +16,7 @@ import * as _ from 'lodash';
         <accordion [closeOthers]="true" >
             <accordion-group [isOpen]="true" panelClass="panel-primary">
                 <div accordion-heading>Metric</div>
-                <kairos-metric></kairos-metric>
+                <kairos-metric [metricName]="query.metrics[0].name" [selectedTagObject]="query.metrics[0].tags" (selectedTagObjectChange)="assignOrDelete('metrics[0].tags',$event)"></kairos-metric>
             </accordion-group>
         </accordion>
         <div class="panel panel-primary">
@@ -37,7 +37,7 @@ import * as _ from 'lodash';
   `]
 })
 export class QueryComponent {
-    query: any = {start_relative:{value:1,unit:'hours'}};
+    query: any = {start_relative:{value:1,unit:'hours'},metrics:[{name:"kairosdb.datastore.query_time",tags:{host:['RD-PC']}}]};
 
     assignOrDelete(field, value){
         if(value===undefined || value===null || value===''){
