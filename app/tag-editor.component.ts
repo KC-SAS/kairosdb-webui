@@ -4,7 +4,7 @@ import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
 
-
+// TODO: clean because copied from the ng2-select style
 let labelStyles = `
   .ui-select-toggle {
     position: relative;
@@ -105,7 +105,7 @@ let labelStyles = `
 `;
 
 @Component({
-    selector: 'kairos-tag-filter',
+    selector: 'kairos-tag-editor',
     template: `
 <div class="form-inline form-group category-section">
     <div class="has-feedback form-group">
@@ -178,10 +178,10 @@ let labelStyles = `
     }
   `]
 })
-export class TagFilterComponent implements OnChanges, OnInit {
+export class TagEditorComponent implements OnChanges, OnInit {
 
     @Input()
-    public tagValuesForNames: any;
+    public tagValuesForNames: {};
     @Input()
     public selectedTagValues: string[];
     @Input()
@@ -240,8 +240,7 @@ export class TagFilterComponent implements OnChanges, OnInit {
 
     onTagNameUpdate() {
         if (this.tagValuesForNames && this.tagValuesForNames[this.tagName]) {
-            this.unselectedTagValues = _.map<string, string>(this.tagValuesForNames[this.tagName], _.identity); // copy array but not elements (_.clone to copy elements)
-            _.difference(this.unselectedTagValues, this.selectedTagValues);
+            this.unselectedTagValues = _.difference(this.tagValuesForNames[this.tagName], this.selectedTagValues);
         }
         else {
             this.unselectedTagValues = [];

@@ -1,6 +1,7 @@
     import { Injectable }    from '@angular/core';
     import { Headers, Http } from '@angular/http';
     import 'rxjs/add/operator/toPromise';
+    import { AGGREGATORS } from './mock-aggregators'
  
     @Injectable()
     export class QueryService {
@@ -22,6 +23,10 @@
                    .toPromise()
                    .then(response => response.json().queries[0].results[0].tags || {} )
                    .catch(this.handleError);
+      }
+
+      getAggregators(): Promise<any> {
+        return Promise.resolve(AGGREGATORS);
       }
 
 

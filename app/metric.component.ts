@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
-import { TagFilterComponent } from './tag-filter.component';
+import { TagEditorComponent } from './tag-editor.component';
 import * as _ from 'lodash';
 
 @Component({
@@ -36,22 +36,33 @@ import * as _ from 'lodash';
     </td>
 </tr>
 </table>
+
+<!-- TAGS -->
 <div class="category-header">
     <h5 class="category-title">Tags</h5> 
-    <button type="button" class="btn btn-default category-add" (click)="addNewTagFilter()"><i class="glyphicon glyphicon-plus"></i></button>
-    <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames.length>0">
+    <button type="button" class="btn btn-default category-add" (click)="tagListComponent.addNew()"><i class="glyphicon glyphicon-plus"></i></button>
+    <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames?.length>0">
         <span class="glyphicon glyphicon-remove"></span>
-        Duplicated tag name <em>{{duplicatedTagNames.join()}}</em>. <a (click)=mergeTags()>Click here to merge</a>
+        Duplicated tag name <em>{{duplicatedTagNames?.join()}}</em>. <a (click)=tagListComponent.merge()>Click here to merge</a>
     </div>
 </div>
-<kairos-tag-filter *ngFor="let selectedTag of selectedTagArray; let idx = index" 
-    [(tagName)]="selectedTagArray[idx].name" 
-    (tagNameChange)="update()"
-    [(selectedTagValues)]="selectedTagArray[idx].values" 
-    (selectedTagValuesChange)="update()"
-    [tagValuesForNames]="tagValuesForNames"
-    (delete)="selectedTagArray.splice(idx,1);"
-></kairos-tag-filter> 
+<div class="category-body">
+    <kairos-tag-list #tagListComponent
+        [(selectedTagObject)]="selectedTagObject" 
+        (selectedTagObjectChange)="selectedTagObjectChange.emit(selectedTagObject)"
+        [metricName]="metricName"
+        [tagValuesForNames]="tagValuesForNames"
+        (error)="duplicatedTagNames=$event"
+        >
+    </kairos-tag-list>
+</div>
+
+<!-- AGGREGATORS -->
+<div class="category-header">
+    <h5 class="category-title">Aggregators</h5> 
+    <button type="button" (click)="aggregatorListComponent.addNew()" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
+</div>
+<kairos-aggregator-list #aggregatorListComponent class="category-body"></kairos-aggregator-list>
   `,
     styles: [`
     td {
@@ -119,6 +130,10 @@ import * as _ from 'lodash';
         width: 500px;
     }
 
+    .category-body {
+        margin-bottom: 20px;
+    }
+
     .icon-refresh-animate {
         animation-name: rotateThis;
         animation-duration: .5s;
@@ -154,32 +169,24 @@ export class MetricComponent implements OnChanges, OnInit {
     private metricNameSubject: Subject<string>;
 
     public tagValuesForNames: {};
-    public selectedTagArray: Array<{}>;
 
     public refreshingMetricNames: boolean;
-
-    public duplicatedTagNames: string[];
 
     public constructor(private queryService: QueryService) {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
-        this.selectedTagArray = [];
-        this.duplicatedTagNames = [];
         this.selectedTagObject = {};
         this.tagValuesForNames = {};
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes['selectedTagObject']) {
-            this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
-        }
     }
 
     ngOnInit() {
         this.metricNameSubject = new Subject<string>();
         this.metricNameSubject.debounceTime(400).filter(value => value !== undefined && value !== null && value !== '').subscribe(
             metricName => this.queryService.getTagNameValues(metricName).then(
-                resp => { this.tagValuesForNames = resp; }
+                resp => { this.tagValuesForNames = resp || {}; }
             )
         );
         this.refreshMetricNames();
@@ -196,47 +203,7 @@ export class MetricComponent implements OnChanges, OnInit {
     }
 
     addNewTagFilter() {
-        this.selectedTagArray.push({ name: '', values: [] });
-    }
-
-    update() {
-        let seenOnce = {};
-        let seenTwice = {};
-        this.selectedTagArray.forEach(function (value, index) {
-            let name = value['name'];
-            if (seenOnce[name]) {
-                seenTwice[name] = true;
-            }
-            else {
-                seenOnce[name] = true;
-            }
-        });
-        this.duplicatedTagNames = _.keys(seenTwice);
-        if (this.duplicatedTagNames.length === 0) {
-            this.selectedTagObject = this.selectedTagListToObject();
-            this.selectedTagObjectChange.emit(this.selectedTagObject);
-        }
-    }
-
-    mergeTags() {
-        this.selectedTagObject = this.selectedTagListToObject();
-        this.selectedTagObjectChange.emit(this.selectedTagObject);
-        this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
-        this.duplicatedTagNames = [];
-    }
-
-    private selectedTagListToObject(): {} {
-        let mergedSelectedTags = {};
-        this.selectedTagArray.forEach(function (value, index) {
-            let name = value['name'];
-            if (mergedSelectedTags[name]) {
-                mergedSelectedTags[name] = _.concat(mergedSelectedTags[name],value['values']);
-            }
-            else {
-                mergedSelectedTags[name] = value['values'];
-            }
-        });
-        return _.mapValues(mergedSelectedTags, _.uniq);
+        // HOW DO I BIND
     }
 
 }
