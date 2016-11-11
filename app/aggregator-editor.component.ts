@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
+import { Component, DoCheck, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
@@ -10,24 +10,33 @@ import * as _ from 'lodash';
     template: `
 <div class="well">
     <div *ngIf="!showAggInfo" class="aggregator-info-icon text-uppercase">
-        {{aggregatorFormat.metadata?.label || aggregatorFormat.structure?.name || 'Invalid'}} aggregator
-        <i class="glyphicon glyphicon-info-sign" (click)="showAggInfo=true"></i>
+        {{currentAggregatorDescription?.metadata?.label || currentAggregatorDescription?.structure?.name || 'Invalid'}} aggregator
+        <i *ngIf="currentAggregatorDescription?.metadata?.description" class="glyphicon glyphicon-info-sign" (click)="showAggInfo=true"></i>
     </div>
-    <alert *ngIf="showAggInfo" class="aggregator-info-box" [type]="'info'" dismissible="true" (close)="showAggInfo=false">
+    <alert *ngIf="showAggInfo && currentAggregatorDescription?.metadata?.description" class="aggregator-info-box" [type]="'info'" dismissible="true" (close)="showAggInfo=false">
         <i class="glyphicon glyphicon-info-sign"></i>
-        Downsampling aggregator computes basic averages over the chosen time buckets
+        {{currentAggregatorDescription?.metadata?.description}}
     </alert>
+
+
     <div class="input-group aggregator-property-group">
 	    <span class="input-group-addon" id="prop" tooltip="The number of units for the aggregation buckets">sampling.value</span>
         <input aria-describedby="prop" [(ngModel)]="propModel" class="form-control"/>
-    </div>    
-    <div class="input-group">
-	    <span class="input-group-addon" id="prop">sampling.unit</span>
-        <input aria-describedby="prop" [(ngModel)]="propModel" class="form-control"/>
+    </div>   
+    <div *ngFor="let aggregatorProperty of currentAggregatorProperties; let idx = index" class="aggregator-property-group">  
+        <button #propButton (click)="propButton.blur();aggregatorProperty.active=!aggregatorProperty.active" type="button" [class.custom-disabled]="!aggregatorProperty.optional" [class.active]="aggregatorProperty.active" class="btn btn-default">
+            {{aggregatorProperty.label || aggregatorProperty.name}}
+        </button> 
+        <div *ngIf="aggregatorProperty.active" style="display: inline-block;padding-left: 20px;">{{aggregatorProperty.property_type}}</div>
     </div>
+
 </div>
-  `,
+`,
     styles: [`
+    .custom-disabled {
+        pointer-events: none !important;
+    }
+
     .aggregator-property-group {
         padding-bottom: 15px;
     }
@@ -56,16 +65,55 @@ import * as _ from 'lodash';
     }
   `]
 })
-export class AggregatorEditorComponent implements OnChanges, OnInit {
+export class AggregatorEditorComponent implements DoCheck, OnInit {
+    active3 = false;
+    active4 = false;
 
     @Input()
-    public aggregatorFormat: {};
+    public aggregatorDescriptions: {}[];
+
+    @Input()
+    public aggregatorObject: {};
+
+    private previousAggregatorName: string;
+
+    private currentAggregatorDescription: {};
+    private currentAggregatorProperties: {}[];
 
     public constructor() {
-        this.aggregatorFormat= {};
+        this.aggregatorDescriptions = new Array<{}>();
+        this.currentAggregatorProperties = new Array<{}>();
     }
 
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+    ngDoCheck() {
+        if (this.aggregatorDescriptions && this.aggregatorObject && this.previousAggregatorName !== this.aggregatorObject['name']) {
+            this.previousAggregatorName = this.aggregatorObject['name'];
+            this.currentAggregatorDescription = _.find(this.aggregatorDescriptions, description => description['structure']['name'] === this.aggregatorObject['name']);
+            let newAggregatorProperties = new Array<{}>();
+            if (this.currentAggregatorDescription && this.currentAggregatorDescription['structure']) {
+                let propertyNames = _.keys(this.currentAggregatorDescription['structure']);
+                _.pull(propertyNames, 'name')
+                propertyNames.forEach((propertyName) => {
+                    let property = _.clone(this.currentAggregatorDescription['structure'][propertyName]);
+                    if (typeof property['property_type'] === 'object') {
+                        let subPropertiesNames = _.keys(property['property_type']);
+                        subPropertiesNames.forEach((subPropertyName) => {
+                            let subProperty = _.clone(property['property_type'][subPropertyName]);
+                            subProperty['name'] = propertyName + '.' + subPropertyName;
+                            subProperty['active'] = _.get(this.aggregatorObject,subProperty['name'])!==undefined || !subProperty['optional'];
+                            newAggregatorProperties.push(subProperty);
+                        });
+                    }
+                    else {
+                        property['name'] = propertyName;
+                        property['active'] = _.get(this.aggregatorObject,property['name'])!==undefined || !property['optional'];
+                        newAggregatorProperties.push(property);
+                    }
+                });
+
+            }
+            this.currentAggregatorProperties = newAggregatorProperties;
+        }
     }
 
     ngOnInit() {

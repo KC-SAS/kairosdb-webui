@@ -13,21 +13,19 @@ import * as _ from 'lodash';
     <div *ngFor="let aggregatorObject of aggregatorObjectList; let idx = index">
         <div class="input-group agregator-name">
             <select class="form-control aggregator-select" [(ngModel)]="aggregatorObject.name" >
-                <option [value]="'sum'">Sum</option>
-                <option [value]="'avg'">Avg</option>
-			    <option [value]="'diff'">Diff</option>
-			    <option [value]="'scale'">Scale</option>
-      		    <option [value]="'first'">First</option>
-			    <option [value]="'last'">Last</option>
-			    <option [value]="'count'">Count</option>
+                <option *ngFor="let aggregatorDescription of aggregatorDescriptions;" [value]="aggregatorDescription?.structure?.name">
+                    {{aggregatorDescription?.metadata?.label || aggregatorDescription?.structure?.name || 'Invalid'}}
+                </option>
             </select>
-	        <button type="button" class="btn btn-default form-control aggregator-state" aria-label="..."><span class="glyphicon glyphicon-ok"></span></button>
+	        <button #currentSelectButton type="button" (click)="currentSelectButton.blur();selectionChange(idx)" [class.active]="idx===selectedAggregatorIndex" class="btn btn-default form-control aggregator-state" aria-label="...">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
         </div>
         <div *ngIf="idx<aggregatorObjectList.length-1" class="glyphicon glyphicon-arrow-down aggregator-arrow"></div>
     </div>
 </td>
-<td class="aggregator-display-area">
-    <kairos-aggregator-editor></kairos-aggregator-editor>
+<td *ngIf="selectedAggregatorIndex!==undefined && aggregatorObjectList[selectedAggregatorIndex]" class="aggregator-display-area">
+    <kairos-aggregator-editor [aggregatorDescriptions]="aggregatorDescriptions" [aggregatorObject]="aggregatorObjectList[selectedAggregatorIndex]"></kairos-aggregator-editor>
 </td>
 </table>
   `,
@@ -37,6 +35,7 @@ import * as _ from 'lodash';
     }
     .aggregator-state {
         width: 40px;
+        margin-left: -1px;
     }
     .aggregator-select, .aggregator-arrow {
         width: 150px;
@@ -81,11 +80,13 @@ import * as _ from 'lodash';
 })
 export class AggregatorListComponent implements OnChanges, OnInit {
     public aggregatorObjectList: {}[];
+    private selectedAggregatorIndex: number;
     public aggregatorNameList: string[];
     public aggregatorDescriptions: {}[];
 
     public constructor(public queryService: QueryService) {
-        this.aggregatorObjectList = [{name:'sum'}];
+        this.aggregatorObjectList = [{name:'test'}];
+        this.selectedAggregatorIndex = 0;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -94,14 +95,22 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     ngOnInit() {
         this.queryService.getAggregators().then(description => {
             if(description['aggregators']){
-                //this.aggregatorNameList = _.map<{},{}>(_.map<{},{}>(description['aggregators'],_.property('metadata'));
-                //this.aggregatorDescriptions = description['aggregators'];
+                this.aggregatorDescriptions = description['aggregators'];
             }
         });
     }
 
     addNew() {
-        this.aggregatorObjectList.push({name:'sum'});
+        this.aggregatorObjectList.push({name:'avg'});
+    }
+
+    selectionChange(idx: number){
+        if(idx!==this.selectedAggregatorIndex && idx<this.aggregatorObjectList.length){
+            this.selectedAggregatorIndex=idx;
+        }
+        else{
+            this.selectedAggregatorIndex=undefined;
+        }
     }
 
 
