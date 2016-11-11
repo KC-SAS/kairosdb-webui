@@ -18,21 +18,46 @@ import * as _ from 'lodash';
         {{currentAggregatorDescription?.metadata?.description}}
     </alert>
 
-
-    <div class="input-group aggregator-property-group">
-	    <span class="input-group-addon" id="prop" tooltip="The number of units for the aggregation buckets">sampling.value</span>
-        <input aria-describedby="prop" [(ngModel)]="propModel" class="form-control"/>
-    </div>   
     <div *ngFor="let aggregatorProperty of currentAggregatorProperties; let idx = index" class="aggregator-property-group">  
         <button #propButton (click)="propButton.blur();aggregatorProperty.active=!aggregatorProperty.active" type="button" [class.custom-disabled]="!aggregatorProperty.optional" [class.active]="aggregatorProperty.active" class="btn btn-default">
             {{aggregatorProperty.label || aggregatorProperty.name}}
         </button> 
-        <div *ngIf="aggregatorProperty.active" style="display: inline-block;padding-left: 20px;">{{aggregatorProperty.property_type}}</div>
+        <div *ngIf="aggregatorProperty.active" class="aggregator-property-input">
+            <span [ngSwitch]="aggregatorProperty.property_type">
+                <input *ngSwitchCase="'text'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
+                <select *ngSwitchCase="'enum'" class="form-control" [(ngModel)]="aggregatorProperty.value" >
+                    <option *ngFor="let aggregatorPropertyOption of aggregatorProperty.options;" [value]="aggregatorPropertyOption">
+                        {{aggregatorPropertyOption}}
+                    </option>
+                </select>
+                <input *ngSwitchCase="'integer'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
+                <input *ngSwitchCase="'long'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
+                <!--<input *ngSwitchCase="'boolean'" type="checkbox" [(ngModel)]="aggregatorProperty.value"/>-->
+                <div *ngSwitchCase="'boolean'" class="checkbox">
+                    <label style="font-size: 1.0em">
+                        <input type="checkbox" value="" checked>
+                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                    </label>
+                </div>
+                <span *ngSwitchDefault>other</span>
+            </span>
+        </div>
     </div>
 
 </div>
 `,
     styles: [`
+    .aggregator-property-input {
+        display: inline-block;
+        padding-left: 20px;
+        vertical-align:middle;
+    }
+    .checkbox {
+        margin: 0px;
+    }
+    .checkbox label {
+        padding: 0px;
+    }
     .custom-disabled {
         pointer-events: none !important;
     }
@@ -63,6 +88,64 @@ import * as _ from 'lodash';
         right: 0px;
         
     }
+
+/* CSS copied */
+.checkbox label:after, 
+.radio label:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.checkbox .cr,
+.radio .cr {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    border-radius: .25em;
+    width: 1.3em;
+    height: 1.3em;
+    float: left;
+    margin-right: .5em;
+}
+
+.radio .cr {
+    border-radius: 50%;
+}
+
+.checkbox .cr .cr-icon,
+.radio .cr .cr-icon {
+    position: absolute;
+    font-size: .8em;
+    line-height: 0;
+    top: 50%;
+    left: 20%;
+}
+
+.radio .cr .cr-icon {
+    margin-left: 0.04em;
+}
+
+.checkbox label input[type="checkbox"],
+.radio label input[type="radio"] {
+    display: none;
+}
+
+.checkbox label input[type="checkbox"] + .cr > .cr-icon,
+.radio label input[type="radio"] + .cr > .cr-icon {
+    opacity: 0;
+    transition: all .1s ease-in;
+}
+
+.checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+.radio label input[type="radio"]:checked + .cr > .cr-icon {
+    opacity: 1;
+}
+
+.checkbox label input[type="checkbox"]:disabled + .cr,
+.radio label input[type="radio"]:disabled + .cr {
+    opacity: .5;
+}
   `]
 })
 export class AggregatorEditorComponent implements DoCheck, OnInit {

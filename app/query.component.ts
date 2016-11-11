@@ -29,6 +29,9 @@ import * as _ from 'lodash';
     .kairos-container {
         margin: 5px 5px;
         max-width: 1000px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     accordion-group:last-child >>> .panel{

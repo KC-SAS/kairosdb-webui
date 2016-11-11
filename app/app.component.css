@@ -47,7 +47,10 @@ li.title {
     display: block;
     color: #aaa;
     text-align: center;
-    padding: 14px 16px;
+    padding-top: 10px;
+    padding-bottom: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
     text-decoration: none;
 }
 

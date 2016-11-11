@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   selector: 'my-app',
   template: `
     <ul>
-      <li class="title">{{title}}<li>
+      <li class="title"><div><img src="kairosdb_dark.png" alt="KairosDB" style="height:25px;"></div><li>
       <li><a routerLink="/query" routerLinkActive="active">Query</a></li>
       <li><a routerLink="/events" routerLinkActive="active">Events</a></li>
       <li><a routerLink="/rollups" routerLinkActive="active">Rollups</a></li>
@@ -18,6 +18,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  title = 'Kairos WebUI';
+  title = 'KairosDB WebUI';
 
 }

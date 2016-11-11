@@ -58,7 +58,7 @@ export const AGGREGATORS: {} = {
                         value: {
                             property_type: "integer",
                             validator: "value>0",
-                            label: "Sampling value", 
+                            label: "Integer value", 
                             description: "The number of units for the aggregation buckets",
                             default: 1,
                             optional: false
@@ -66,7 +66,7 @@ export const AGGREGATORS: {} = {
                         unit: {
                             property_type: "enum",
                             values: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
-                            label: "Sampling unit",
+                            label: "Enum value",
                             description: "The unit for the aggregation buckets",
                             default: "milliseconds",
                             optional: false
