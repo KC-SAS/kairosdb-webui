@@ -15,7 +15,7 @@ export const AGGREGATORS: {} = {
                         },
                         unit: {
                             property_type: "enum",
-                            values: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
+                            options: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
                             label: "Sampling unit",
                             description: "The unit for the aggregation buckets",
                             default: "milliseconds",
@@ -65,7 +65,7 @@ export const AGGREGATORS: {} = {
                         },
                         unit: {
                             property_type: "enum",
-                            values: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
+                            options: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
                             label: "Enum value",
                             description: "The unit for the aggregation buckets",
                             default: "milliseconds",
@@ -107,7 +107,7 @@ export const AGGREGATORS: {} = {
                         value: {
                             property_type: "integer",
                             validator: "value>0",
-                            label: "Sampling value", 
+                            label: "Integer Prop", 
                             description: "The number of units for the aggregation buckets",
                             default: 1,
                             optional: false
@@ -115,7 +115,7 @@ export const AGGREGATORS: {} = {
                         unit: {
                             property_type: "enum",
                             options: ["years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds"],
-                            label: "Sampling unit",
+                            label: "Enum prop",
                             description: "The unit for the aggregation buckets",
                             default: "milliseconds",
                             optional: false
@@ -136,13 +136,35 @@ export const AGGREGATORS: {} = {
                     default: false,
                     optional: true
                 },
+                text_small_prop: {
+                    property_type: "text-small",
+                    label: "Small text prop", //mandatory
+                    description: "25%",
+                    default: false,
+                    optional: false
+                },
                 text_prop: {
                     property_type: "text",
-                    label: "Text prop prop", //mandatory
-                    description: "Full line text",
+                    label: "Regular text prop", //mandatory
+                    description: "50%",
+                    default: false,
+                    optional: false
+                },
+                text_large_prop: {
+                    property_type: "text-large",
+                    label: "Large text prop", //mandatory
+                    description: "100%",
+                    default: false,
+                    optional: false
+                },
+                textarea_prop: {
+                    property_type: "textarea",
+                    label: "Text area", //mandatory
+                    description: "multiline text",
                     default: false,
                     optional: false
                 }
+
             },
             metadata: {
                 description: "This is a test aggregator... to do tests !", //mandatory

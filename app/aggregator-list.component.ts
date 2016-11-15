@@ -10,22 +10,29 @@ import * as _ from 'lodash';
     template: `
 <table>
 <td class="aggregator-name-column">
-    <div *ngFor="let aggregatorObject of aggregatorObjectList; let idx = index">
+    <div *ngFor="let aggregatorObject of generatedAggregatorObjectList; let idx = index">
         <div class="input-group agregator-name">
-            <select class="form-control aggregator-select" [(ngModel)]="aggregatorObject.name" >
+            <select class="form-control aggregator-select" [(ngModel)]="generatedAggregatorObjectList[idx].name" (ngModelChange)="aggregatorObjectListChange.emit(this.generatedAggregatorObjectList)">
                 <option *ngFor="let aggregatorDescription of aggregatorDescriptions;" [value]="aggregatorDescription?.structure?.name">
                     {{aggregatorDescription?.metadata?.label || aggregatorDescription?.structure?.name || 'Invalid'}}
                 </option>
             </select>
+            <button #currentSelectButton type="button" (click)="deleteAggregator(idx)" class="btn btn-default form-control aggregator-state" aria-label="...">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
 	        <button #currentSelectButton type="button" (click)="currentSelectButton.blur();selectionChange(idx)" [class.active]="idx===selectedAggregatorIndex" class="btn btn-default form-control aggregator-state" aria-label="...">
-                <span class="glyphicon glyphicon-ok"></span>
+                <span class="glyphicon glyphicon-pencil"></span>
             </button>
         </div>
-        <div *ngIf="idx<aggregatorObjectList.length-1" class="glyphicon glyphicon-arrow-down aggregator-arrow"></div>
+        <div *ngIf="idx<generatedAggregatorObjectList.length-1" class="glyphicon glyphicon-arrow-down aggregator-arrow"></div>
     </div>
 </td>
-<td *ngIf="selectedAggregatorIndex!==undefined && aggregatorObjectList[selectedAggregatorIndex]" class="aggregator-display-area">
-    <kairos-aggregator-editor [aggregatorDescriptions]="aggregatorDescriptions" [aggregatorObject]="aggregatorObjectList[selectedAggregatorIndex]"></kairos-aggregator-editor>
+<td *ngFor="let aggregatorObject of generatedAggregatorObjectList; let idx = index" [class.no-display]="idx!==selectedAggregatorIndex" class="aggregator-display-area">
+    <kairos-aggregator-editor 
+        [aggregatorDescriptions]="aggregatorDescriptions" 
+        [(aggregatorObject)]="generatedAggregatorObjectList[idx]"
+        (aggregatorObjectChange)="aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);"
+    ></kairos-aggregator-editor>
 </td>
 </table>
   `,
@@ -34,8 +41,10 @@ import * as _ from 'lodash';
         width: 100%;
     }
     .aggregator-state {
-        width: 40px;
+        width: 32px;
         margin-left: -1px;
+        padding-left: 1px;
+        padding-right: 1px;
     }
     .aggregator-select, .aggregator-arrow {
         width: 150px;
@@ -45,7 +54,7 @@ import * as _ from 'lodash';
         padding: 5px
     }
     .aggregator-name-column {
-        width: 200px;
+        width: 220px;
     }
     .aggregator-display-area {
         vertical-align: top;
@@ -76,20 +85,35 @@ import * as _ from 'lodash';
         right: 0px;
         
     }
+
+    .no-display {
+        display: none;
+    }
   `]
 })
 export class AggregatorListComponent implements OnChanges, OnInit {
-    public aggregatorObjectList: {}[];
+    @Input()
+    public parsedAggregatorObjectList: {}[];
+
+    public generatedAggregatorObjectList: {}[];
+
+
+    @Output()
+    public aggregatorObjectListChange = new EventEmitter<{}[]>();
+
     private selectedAggregatorIndex: number;
-    public aggregatorNameList: string[];
     public aggregatorDescriptions: {}[];
 
     public constructor(public queryService: QueryService) {
-        this.aggregatorObjectList = [{name:'test'}];
-        this.selectedAggregatorIndex = 0;
+        this.generatedAggregatorObjectList = [{name:'test'}];
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if(changes['parsedAggregatorObjectList']){
+            console.log('ngOnChanges parsedAggregatorObjectList');
+            this.selectedAggregatorIndex = undefined;
+            this.generatedAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.cloneDeep) || [];
+        }
     }
 
     ngOnInit() {
@@ -101,11 +125,13 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     }
 
     addNew() {
-        this.aggregatorObjectList.push({name:'avg'});
+        this.generatedAggregatorObjectList.push({name:'avg'});
+        this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
+        this.selectedAggregatorIndex=this.generatedAggregatorObjectList.length-1;
     }
 
     selectionChange(idx: number){
-        if(idx!==this.selectedAggregatorIndex && idx<this.aggregatorObjectList.length){
+        if(idx!==this.selectedAggregatorIndex && idx<this.generatedAggregatorObjectList.length){
             this.selectedAggregatorIndex=idx;
         }
         else{
@@ -113,6 +139,16 @@ export class AggregatorListComponent implements OnChanges, OnInit {
         }
     }
 
+    deleteAggregator(idx: number){
+        if(idx===this.selectedAggregatorIndex && idx<this.generatedAggregatorObjectList.length){
+            this.selectedAggregatorIndex=undefined;
+        }
+        else if(this.selectedAggregatorIndex && idx<this.selectedAggregatorIndex){
+            this.selectedAggregatorIndex--;
+        }
+        _.pullAt(this.generatedAggregatorObjectList, idx);
+        this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
+    }
 
 }
 

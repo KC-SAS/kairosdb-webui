@@ -22,7 +22,7 @@ import * as _ from 'lodash';
 })
 export class TagListComponent implements OnChanges, OnInit {
     @Input()
-    public selectedTagObject: {};
+    public parsedSelectedTagObject: {}; // downstream
     @Output()
     public selectedTagObjectChange = new EventEmitter<{}>();
 
@@ -43,13 +43,13 @@ export class TagListComponent implements OnChanges, OnInit {
         // initialize empty arrays for typeahead component
         this.selectedTagArray = [];
         this.duplicatedTagNames = [];
-        this.selectedTagObject = {};
         this.tagValuesForNames = {};
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes['selectedTagObject']) {
-            this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
+        if (changes['parsedSelectedTagObject']) {
+            console.log('ngOnChanges parsedSelectedTagObject')
+            this.selectedTagArray = _.map(_.keys(this.parsedSelectedTagObject), (key) => { return { name: key, values: _.cloneDeep(this.parsedSelectedTagObject[key]) } });
         }
     }
 
@@ -72,22 +72,16 @@ export class TagListComponent implements OnChanges, OnInit {
                 seenOnce[name] = true;
             }
         });
-        this.duplicatedTagNames = _.keys(seenTwice);
-        if (this.duplicatedTagNames.length === 0) {
-            this.selectedTagObject = this.selectedTagListToObject();
-            this.selectedTagObjectChange.emit(this.selectedTagObject);
-        }
-        else {
-            this.error.emit(this.duplicatedTagNames);
+        this.error.emit(_.keys(seenTwice));
+        if (_.isEmpty(seenTwice)) {
+            this.selectedTagObjectChange.emit(this.selectedTagListToObject());
         }
     }
 
     merge() {
-        this.selectedTagObject = this.selectedTagListToObject();
-        this.selectedTagObjectChange.emit(this.selectedTagObject);
+        this.selectedTagObjectChange.emit(this.selectedTagListToObject());
         this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
-        this.duplicatedTagNames = [];
-        this.error.emit(this.duplicatedTagNames);
+        this.error.emit([]);
     }
 
     private selectedTagListToObject(): {} {
@@ -101,7 +95,8 @@ export class TagListComponent implements OnChanges, OnInit {
                 mergedSelectedTags[name] = value['values'];
             }
         });
-        return _.mapValues(mergedSelectedTags, _.uniq);
+        mergedSelectedTags = _.mapValues(mergedSelectedTags, _.uniq);
+        return mergedSelectedTags;
     }
 
 }

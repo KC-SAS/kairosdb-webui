@@ -48,8 +48,8 @@ import * as _ from 'lodash';
 </div>
 <div class="category-body">
     <kairos-tag-list #tagListComponent
-        [(selectedTagObject)]="selectedTagObject" 
-        (selectedTagObjectChange)="selectedTagObjectChange.emit(selectedTagObject)"
+        [parsedSelectedTagObject]="parsedSelectedTagObject" 
+        (selectedTagObjectChange)="selectedTagObjectChange.emit($event)"
         [metricName]="metricName"
         [tagValuesForNames]="tagValuesForNames"
         (error)="duplicatedTagNames=$event"
@@ -62,7 +62,10 @@ import * as _ from 'lodash';
     <h5 class="category-title">Aggregators</h5> 
     <button type="button" (click)="aggregatorListComponent.addNew()" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
 </div>
-<kairos-aggregator-list #aggregatorListComponent class="category-body"></kairos-aggregator-list>
+<kairos-aggregator-list #aggregatorListComponent class="category-body"
+    [parsedAggregatorObjectList]="parsedAggregatorObjectList" 
+    (aggregatorObjectListChange)="aggregatorObjectListChange.emit($event)"
+></kairos-aggregator-list>
   `,
     styles: [`
     td {
@@ -155,9 +158,14 @@ export class MetricComponent implements OnChanges, OnInit {
     metricChange = new EventEmitter<any>();
 
     @Input()
-    public selectedTagObject: {};
+    public parsedSelectedTagObject: {};
     @Output()
     public selectedTagObjectChange = new EventEmitter<{}>();
+
+    @Input()
+    public parsedAggregatorObjectList: {}[];
+    @Output()
+    public aggregatorObjectListChange = new EventEmitter<{}[]>();
 
     public metricNames: string[];
 
@@ -175,11 +183,13 @@ export class MetricComponent implements OnChanges, OnInit {
     public constructor(private queryService: QueryService) {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
-        this.selectedTagObject = {};
         this.tagValuesForNames = {};
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if(changes['parsedAggregatorObjectList']){
+            console.log('ngOnChanges parsedAggregatorObjectList');
+        }
     }
 
     ngOnInit() {
@@ -200,10 +210,6 @@ export class MetricComponent implements OnChanges, OnInit {
 
     onMetricNameUpdate() {
         this.metricNameSubject.next(this.metricName);
-    }
-
-    addNewTagFilter() {
-        // HOW DO I BIND
     }
 
 }

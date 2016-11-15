@@ -1,4 +1,4 @@
-import { Component, DoCheck, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
+import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
@@ -18,24 +18,26 @@ import * as _ from 'lodash';
         {{currentAggregatorDescription?.metadata?.description}}
     </alert>
 
-    <div *ngFor="let aggregatorProperty of currentAggregatorProperties; let idx = index" class="aggregator-property-group">  
-        <button #propButton (click)="propButton.blur();aggregatorProperty.active=!aggregatorProperty.active" type="button" [class.custom-disabled]="!aggregatorProperty.optional" [class.active]="aggregatorProperty.active" class="btn btn-default">
+    <div *ngFor="let aggregatorProperty of currentAggregatorProperties" class="aggregator-property-group">  
+        <button #propButton (click)="onPropertyNameClick(propButton,aggregatorProperty)" type="button" [class.custom-disabled]="!aggregatorProperty.optional" [class.active]="aggregatorProperty.active" class="btn btn-default aggregator-property-name">
             {{aggregatorProperty.label || aggregatorProperty.name}}
         </button> 
         <div *ngIf="aggregatorProperty.active" class="aggregator-property-input">
             <span [ngSwitch]="aggregatorProperty.property_type">
-                <input *ngSwitchCase="'text'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
-                <select *ngSwitchCase="'enum'" class="form-control" [(ngModel)]="aggregatorProperty.value" >
+                <input *ngSwitchCase="'text'" style="width:250px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
+                <input *ngSwitchCase="'text-small'" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
+                <input *ngSwitchCase="'text-large'" style="width:100%;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
+                <textarea *ngSwitchCase="'textarea'" style="width:100%;resize:vertical;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"></textarea>
+                <select *ngSwitchCase="'enum'" style="width:inherit;" class="form-control" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()">
                     <option *ngFor="let aggregatorPropertyOption of aggregatorProperty.options;" [value]="aggregatorPropertyOption">
                         {{aggregatorPropertyOption}}
                     </option>
                 </select>
-                <input *ngSwitchCase="'integer'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
-                <input *ngSwitchCase="'long'" [(ngModel)]="aggregatorProperty.value" class="form-control"/>
-                <!--<input *ngSwitchCase="'boolean'" type="checkbox" [(ngModel)]="aggregatorProperty.value"/>-->
+                <input *ngSwitchCase="'integer'" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
+                <input *ngSwitchCase="'long'" style="width:200px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
                 <div *ngSwitchCase="'boolean'" class="checkbox">
                     <label style="font-size: 1.0em">
-                        <input type="checkbox" value="" checked>
+                        <input type="checkbox" value="" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()"> 
                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                     </label>
                 </div>
@@ -47,11 +49,23 @@ import * as _ from 'lodash';
 </div>
 `,
     styles: [`
+    .aggregator-property-group {
+        margin-bottom: 15px;
+        display: table;
+    }
+
     .aggregator-property-input {
-        display: inline-block;
+        display: table-cell;
         padding-left: 20px;
         vertical-align:middle;
+        width: 100%;
     }
+
+    .aggregator-property-name {
+        display: table-cell;
+        width: 150px;
+    }
+
     .checkbox {
         margin: 0px;
     }
@@ -62,9 +76,6 @@ import * as _ from 'lodash';
         pointer-events: none !important;
     }
 
-    .aggregator-property-group {
-        padding-bottom: 15px;
-    }
     .aggregator-info-box {
         font-size: small;
         text-align: center;
@@ -148,7 +159,7 @@ import * as _ from 'lodash';
 }
   `]
 })
-export class AggregatorEditorComponent implements DoCheck, OnInit {
+export class AggregatorEditorComponent implements OnChanges, OnInit {
     active3 = false;
     active4 = false;
 
@@ -157,6 +168,9 @@ export class AggregatorEditorComponent implements DoCheck, OnInit {
 
     @Input()
     public aggregatorObject: {};
+
+    @Output()
+    public aggregatorObjectChange = new EventEmitter<{}>();
 
     private previousAggregatorName: string;
 
@@ -168,7 +182,15 @@ export class AggregatorEditorComponent implements DoCheck, OnInit {
         this.currentAggregatorProperties = new Array<{}>();
     }
 
-    ngDoCheck() {
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        // called only when the change
+        if(changes['aggregatorObject'] || changes['aggregatorDescriptions']){
+            this.aggregatorObjectNameChange();
+        } 
+    }
+
+    private aggregatorObjectNameChange() {
+        // adapt aggregatorObject model and currentAggregatorProperties when the aggegator name changes
         if (this.aggregatorDescriptions && this.aggregatorObject && this.previousAggregatorName !== this.aggregatorObject['name']) {
             this.previousAggregatorName = this.aggregatorObject['name'];
             this.currentAggregatorDescription = _.find(this.aggregatorDescriptions, description => description['structure']['name'] === this.aggregatorObject['name']);
@@ -200,6 +222,24 @@ export class AggregatorEditorComponent implements DoCheck, OnInit {
     }
 
     ngOnInit() {
+    }
+
+    updateAggregatorObject(){
+        this.currentAggregatorProperties.forEach(property => {
+            if(property['active']){
+                _.set(this.aggregatorObject,property['name'],property['value']);
+            }
+            else{
+                _.unset(this.aggregatorObject,property['name']);
+            }
+        });
+        this.aggregatorObjectChange.emit(this.aggregatorObject);
+    }
+
+    onPropertyNameClick(propButton,aggregatorProperty){
+        propButton.blur();
+        aggregatorProperty.active=!aggregatorProperty.active;
+        this.updateAggregatorObject();
     }
 
 
