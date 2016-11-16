@@ -5,6 +5,7 @@ import { HttpModule }    from '@angular/http';
 import { AppComponent }   from './app.component';
 import { QueryComponent } from './query.component';
 import { AppRoutingModule } from './app-routing.module';
+import { SharedModule } from './shared/shared.module';
 
 import { QueryService } from './query.service';
 
@@ -19,7 +20,7 @@ import { TimeRangeModule } from './time/time-range.module';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
-                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule ],
+                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule, SharedModule ],
   declarations: [ AppComponent, QueryComponent, MetricComponent, TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService ]

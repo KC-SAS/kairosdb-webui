@@ -1,4 +1,6 @@
-import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
+import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter, QueryList, ViewChildren } from '@angular/core';
+import { AggregatorEditorComponent } from './aggregator-editor.component'
+
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
@@ -12,7 +14,7 @@ import * as _ from 'lodash';
 <td class="aggregator-name-column">
     <div *ngFor="let aggregatorObject of generatedAggregatorObjectList; let idx = index">
         <div class="input-group agregator-name">
-            <select class="form-control aggregator-select" [(ngModel)]="generatedAggregatorObjectList[idx].name" (ngModelChange)="aggregatorObjectListChange.emit(this.generatedAggregatorObjectList)">
+            <select class="form-control aggregator-select" [(ngModel)]="workingAggregatorObjectList[idx].name" (ngModelChange)="onAggregatorNameChange(idx,$event)">
                 <option *ngFor="let aggregatorDescription of aggregatorDescriptions;" [value]="aggregatorDescription?.structure?.name">
                     {{aggregatorDescription?.metadata?.label || aggregatorDescription?.structure?.name || 'Invalid'}}
                 </option>
@@ -27,11 +29,11 @@ import * as _ from 'lodash';
         <div *ngIf="idx<generatedAggregatorObjectList.length-1" class="glyphicon glyphicon-arrow-down aggregator-arrow"></div>
     </div>
 </td>
-<td *ngFor="let aggregatorObject of generatedAggregatorObjectList; let idx = index" [class.no-display]="idx!==selectedAggregatorIndex" class="aggregator-display-area">
+<td *ngFor="let aggregatorObject of workingAggregatorObjectList; let idx = index" [class.no-display]="idx!==selectedAggregatorIndex" class="aggregator-display-area">
     <kairos-aggregator-editor 
         [aggregatorDescriptions]="aggregatorDescriptions" 
-        [(aggregatorObject)]="generatedAggregatorObjectList[idx]"
-        (aggregatorObjectChange)="aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);"
+        [aggregatorObject]="workingAggregatorObjectList[idx]"
+        (aggregatorObjectChange)="onAggregatorEdit(idx,$event)"
     ></kairos-aggregator-editor>
 </td>
 </table>
@@ -95,6 +97,8 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     @Input()
     public parsedAggregatorObjectList: {}[];
 
+    public workingAggregatorObjectList: {}[];
+
     public generatedAggregatorObjectList: {}[];
 
 
@@ -104,15 +108,18 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     private selectedAggregatorIndex: number;
     public aggregatorDescriptions: {}[];
 
+    @ViewChildren(AggregatorEditorComponent) aggregatorEditorComponents: QueryList<AggregatorEditorComponent>;
+
     public constructor(public queryService: QueryService) {
         this.generatedAggregatorObjectList = [{name:'test'}];
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if(changes['parsedAggregatorObjectList']){
-            console.log('ngOnChanges parsedAggregatorObjectList');
             this.selectedAggregatorIndex = undefined;
-            this.generatedAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.cloneDeep) || [];
+            this.workingAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.identity) || [];
+            this.generatedAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.identity) || [];
+            this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
         }
     }
 
@@ -125,9 +132,10 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     }
 
     addNew() {
+        this.workingAggregatorObjectList.push({name:'avg'});
         this.generatedAggregatorObjectList.push({name:'avg'});
         this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
-        this.selectedAggregatorIndex=this.generatedAggregatorObjectList.length-1;
+        this.selectedAggregatorIndex=this.workingAggregatorObjectList.length-1;
     }
 
     selectionChange(idx: number){
@@ -147,6 +155,21 @@ export class AggregatorListComponent implements OnChanges, OnInit {
             this.selectedAggregatorIndex--;
         }
         _.pullAt(this.generatedAggregatorObjectList, idx);
+        _.pullAt(this.workingAggregatorObjectList, idx);
+        this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
+    }
+
+    onAggregatorNameChange(idx,name){
+        let newAggregatorObject = _.cloneDeep(this.generatedAggregatorObjectList[idx]);
+        newAggregatorObject['name']=name;
+        this.aggregatorEditorComponents.toArray()[idx].aggregatorChanged(newAggregatorObject);
+        this.aggregatorEditorComponents.toArray()[idx].updateAggregatorObject();
+        this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
+    }
+
+    onAggregatorEdit(idx, newAggregatorObject){
+        console.log('onAggregatorEdit '+JSON.stringify(newAggregatorObject));
+        this.generatedAggregatorObjectList[idx]=newAggregatorObject;
         this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
     }
 

@@ -99,65 +99,8 @@ import * as _ from 'lodash';
         right: 0px;
         
     }
-
-/* CSS copied */
-.checkbox label:after, 
-.radio label:after {
-    content: '';
-    display: table;
-    clear: both;
-}
-
-.checkbox .cr,
-.radio .cr {
-    position: relative;
-    display: inline-block;
-    border: 1px solid #a9a9a9;
-    border-radius: .25em;
-    width: 1.3em;
-    height: 1.3em;
-    float: left;
-    margin-right: .5em;
-}
-
-.radio .cr {
-    border-radius: 50%;
-}
-
-.checkbox .cr .cr-icon,
-.radio .cr .cr-icon {
-    position: absolute;
-    font-size: .8em;
-    line-height: 0;
-    top: 50%;
-    left: 20%;
-}
-
-.radio .cr .cr-icon {
-    margin-left: 0.04em;
-}
-
-.checkbox label input[type="checkbox"],
-.radio label input[type="radio"] {
-    display: none;
-}
-
-.checkbox label input[type="checkbox"] + .cr > .cr-icon,
-.radio label input[type="radio"] + .cr > .cr-icon {
-    opacity: 0;
-    transition: all .1s ease-in;
-}
-
-.checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
-.radio label input[type="radio"]:checked + .cr > .cr-icon {
-    opacity: 1;
-}
-
-.checkbox label input[type="checkbox"]:disabled + .cr,
-.radio label input[type="radio"]:disabled + .cr {
-    opacity: .5;
-}
-  `]
+  `],
+    styleUrls: ['css/custom-checkbox.css']
 })
 export class AggregatorEditorComponent implements OnChanges, OnInit {
     active3 = false;
@@ -172,7 +115,7 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
     @Output()
     public aggregatorObjectChange = new EventEmitter<{}>();
 
-    private previousAggregatorName: string;
+    public aggregatorName: string;
 
     private currentAggregatorDescription: {};
     private currentAggregatorProperties: {}[];
@@ -184,61 +127,76 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         // called only when the change
-        if(changes['aggregatorObject'] || changes['aggregatorDescriptions']){
-            this.aggregatorObjectNameChange();
-        } 
+        if (changes['aggregatorObject'] || changes['aggregatorDescriptions']) {
+            console.log('ngOnChanges');
+            this.aggregatorChanged(this.aggregatorObject);
+        }
     }
 
-    private aggregatorObjectNameChange() {
-        // adapt aggregatorObject model and currentAggregatorProperties when the aggegator name changes
-        if (this.aggregatorDescriptions && this.aggregatorObject && this.previousAggregatorName !== this.aggregatorObject['name']) {
-            this.previousAggregatorName = this.aggregatorObject['name'];
-            this.currentAggregatorDescription = _.find(this.aggregatorDescriptions, description => description['structure']['name'] === this.aggregatorObject['name']);
-            let newAggregatorProperties = new Array<{}>();
-            if (this.currentAggregatorDescription && this.currentAggregatorDescription['structure']) {
-                let propertyNames = _.keys(this.currentAggregatorDescription['structure']);
-                _.pull(propertyNames, 'name')
-                propertyNames.forEach((propertyName) => {
-                    let property = _.clone(this.currentAggregatorDescription['structure'][propertyName]);
-                    if (typeof property['property_type'] === 'object') {
-                        let subPropertiesNames = _.keys(property['property_type']);
-                        subPropertiesNames.forEach((subPropertyName) => {
-                            let subProperty = _.clone(property['property_type'][subPropertyName]);
-                            subProperty['name'] = propertyName + '.' + subPropertyName;
-                            subProperty['active'] = _.get(this.aggregatorObject,subProperty['name'])!==undefined || !subProperty['optional'];
-                            newAggregatorProperties.push(subProperty);
-                        });
-                    }
-                    else {
-                        property['name'] = propertyName;
-                        property['active'] = _.get(this.aggregatorObject,property['name'])!==undefined || !property['optional'];
-                        newAggregatorProperties.push(property);
-                    }
-                });
+    public aggregatorChanged(aggregatorObject) {
+        this.aggregatorName = aggregatorObject['name'];
+        this.currentAggregatorDescription = _.find(this.aggregatorDescriptions, description => description['structure']['name'] === aggregatorObject['name']);
+        let newAggregatorProperties = new Array<{}>();
+        if (this.currentAggregatorDescription && this.currentAggregatorDescription['structure']) {
+            let propertyNames = _.keys(this.currentAggregatorDescription['structure']);
+            _.pull(propertyNames, 'name')
+            propertyNames.forEach((propertyName) => {
+                let property = _.clone(this.currentAggregatorDescription['structure'][propertyName]);
+                if (typeof property['property_type'] === 'object') {
+                    let subPropertiesNames = _.keys(property['property_type']);
+                    subPropertiesNames.forEach((subPropertyName) => {
+                        let subProperty = _.clone(property['property_type'][subPropertyName]);
+                        subProperty['name'] = propertyName + '.' + subPropertyName;
+                        let currentVal = _.get(aggregatorObject, subProperty['name']); 
+                        subProperty['active'] = currentVal !== undefined || !subProperty['optional'];
+                        subProperty['value'] = currentVal || this.getDefault(subProperty['property_type']);
+                        newAggregatorProperties.push(subProperty);
+                    });
+                }
+                else {
+                    property['name'] = propertyName;
+                    let currentVal = _.get(aggregatorObject, property['name']);
+                    property['active'] = currentVal !== undefined || !property['optional'];
+                    property['value'] = currentVal || this.getDefault(property['property_type']);
+                    newAggregatorProperties.push(property);
+                }
+            });
 
-            }
-            this.currentAggregatorProperties = newAggregatorProperties;
         }
+        this.currentAggregatorProperties = newAggregatorProperties;
     }
 
     ngOnInit() {
     }
 
-    updateAggregatorObject(){
-        this.currentAggregatorProperties.forEach(property => {
-            if(property['active']){
-                _.set(this.aggregatorObject,property['name'],property['value']);
-            }
-            else{
-                _.unset(this.aggregatorObject,property['name']);
-            }
-        });
-        this.aggregatorObjectChange.emit(this.aggregatorObject);
+    private getDefault(propertyType:string): any{
+        if(propertyType==='boolean'){
+            return false;
+        }
+
+        else{
+            return '';
+        }
+
     }
 
-    onPropertyNameClick(propButton,aggregatorProperty){
+    updateAggregatorObject() {
+        let localAggregatorObject = {};
+        localAggregatorObject['name'] = this.aggregatorName;
+        this.currentAggregatorProperties.forEach(property => {
+            if (property['active']) {
+                _.set(localAggregatorObject, property['name'], property['value']);
+            }
+            else {
+                _.unset(localAggregatorObject, property['name']);
+            }
+        });
+        this.aggregatorObjectChange.emit(localAggregatorObject);
+    }
+
+    onPropertyNameClick(propButton, aggregatorProperty) {
         propButton.blur();
-        aggregatorProperty.active=!aggregatorProperty.active;
+        aggregatorProperty.active = !aggregatorProperty.active;
         this.updateAggregatorObject();
     }
 

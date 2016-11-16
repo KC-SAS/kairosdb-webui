@@ -15,17 +15,15 @@
         <kairos-relativepicker *ngIf="timeStartRadioModel==='Relative'" [(model)]="startRelative" (modelChange)="startRelativeChange.emit($event);"></kairos-relativepicker>
 	</td>
 	<td class="timezone-col" rowspan="2">
-		<div class="form-group has-feedback">
-		<input #timezoneField [ngModel]="timezone"
-         [typeahead]="items"
-		 [typeaheadOptionsLimit]="10"
+		<kairos-typeahead #timezoneField
+		 [value]="timezone"
+		 [typeaheadSource]="items"
+         [typeaheadOptionsLimit]="10"
          [typeaheadMinLength]="0"
-		 (typeaheadOnSelect)="timezone=timezoneField.value;timezoneChange.emit(timezone);"
-         (blur)="onTimezoneBlur(timezoneField)"
-		 placeholder="Browser time zone"
-         class="form-control">
-		 <i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
-		</div>
+		 [placeholder]="'Browser time zone'"
+         (typeaheadOnSelect)="timezone=timezoneField.value;timezoneChange.emit(timezone);"
+         (blur)="onTimezoneBlur(timezoneField)">
+		</kairos-typeahead>
 	  </td>
 </tr>
 

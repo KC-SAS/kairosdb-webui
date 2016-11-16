@@ -97,7 +97,7 @@ export class TimeRangeComponent implements OnChanges {
       else if (this.endAbsolute !== undefined) {
         this.timeEndRadioModel = "Absolute";
       }
-      else{
+      else {
         this.timeEndRadioModel = undefined;
       }
     }
@@ -135,9 +135,9 @@ export class TimeRangeComponent implements OnChanges {
   }
 
   onRadioClick(startOrEnd: string) {
-    let absolute = startOrEnd+'Absolute';
-    let relative = startOrEnd+'Relative';
-    let radioModel = this['time'+startOrEnd.charAt(0).toUpperCase()+startOrEnd.slice(1)+'RadioModel'];
+    let absolute = startOrEnd + 'Absolute';
+    let relative = startOrEnd + 'Relative';
+    let radioModel = this['time' + startOrEnd.charAt(0).toUpperCase() + startOrEnd.slice(1) + 'RadioModel'];
     if (radioModel == 'Absolute') {
       this[absolute] = this.defaultDate();
       this[relative] = undefined;
@@ -152,8 +152,8 @@ export class TimeRangeComponent implements OnChanges {
       this[relative] = undefined;
       this[absolute] = undefined;
     }
-    this[relative+'Change'].emit(this[relative]);
-    this[absolute+'Change'].emit(this[absolute]);
+    this[relative + 'Change'].emit(this[relative]);
+    this[absolute + 'Change'].emit(this[absolute]);
 
   }
 

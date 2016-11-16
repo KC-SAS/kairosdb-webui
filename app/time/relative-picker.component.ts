@@ -5,7 +5,7 @@ import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '
     template: `
     <div class="input-group">
         <input type="text" style="width:50px;margin-right:-1px;" class="form-control" aria-label="..." [(ngModel)]="model.value" (keyup)="modelChange.emit(model)">
-        <select style="width:200px" class="form-control" [(ngModel)]="model.unit" (change)="modelChange.emit(model)" >
+        <select style="width:inherit" class="form-control" [(ngModel)]="model.unit" (change)="modelChange.emit(model)" >
             <option [value]="'years'">Years</option>
             <option [value]="'months'">Months</option>
 			<option [value]="'weeks'">Weeks</option>

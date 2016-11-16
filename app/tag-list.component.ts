@@ -48,7 +48,6 @@ export class TagListComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes['parsedSelectedTagObject']) {
-            console.log('ngOnChanges parsedSelectedTagObject')
             this.selectedTagArray = _.map(_.keys(this.parsedSelectedTagObject), (key) => { return { name: key, values: _.cloneDeep(this.parsedSelectedTagObject[key]) } });
         }
     }
@@ -79,8 +78,9 @@ export class TagListComponent implements OnChanges, OnInit {
     }
 
     merge() {
-        this.selectedTagObjectChange.emit(this.selectedTagListToObject());
-        this.selectedTagArray = _.map(_.keys(this.selectedTagObject), (key) => { return { name: key, values: this.selectedTagObject[key] } });
+        let newSelectedTagObject = this.selectedTagListToObject();
+        this.selectedTagObjectChange.emit(newSelectedTagObject);
+        this.selectedTagArray = _.map(_.keys(newSelectedTagObject), (key) => { return { name: key, values: newSelectedTagObject[key] } });
         this.error.emit([]);
     }
 

@@ -73,3 +73,11 @@ li a.active {
 li a.active:hover {
     background-color: #039be5;
 }
+
+:host >>> select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: url(dropdown.ico) right / 20px no-repeat #fff;
+        padding-right: 20px;
+}

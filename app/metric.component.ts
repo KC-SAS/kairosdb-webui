@@ -15,19 +15,17 @@ import * as _ from 'lodash';
         <span >Name </span >
     </td>
     <td class="input-col">
-        <div class="has-feedback">
-		    <input
+        <kairos-typeahead
             #metricNameField
-            [(ngModel)]="metricName"
-            [typeahead]="metricNames"
-		    [typeaheadOptionsLimit]="10"
+            [(value)]="metricName"
+            [typeaheadSource]="metricNames"
+		    [typeaheadOptionsLimit]="100"
             [typeaheadMinLength]="0"
             (typeaheadOnSelect)="onMetricNameUpdate();"
             (blur)="onMetricNameUpdate()"
-		    placeholder="Enter metric name"
-            class="form-control ui-select-search">
-		    <i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
-	    </div>
+		    [placeholder]="'Enter metric name'"
+            class="ui-select-search">
+	    </kairos-typeahead>
     </td>
     <td>
         <button type="button" class="btn btn-default" (click)="refreshMetricNames()" >
@@ -188,7 +186,6 @@ export class MetricComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if(changes['parsedAggregatorObjectList']){
-            console.log('ngOnChanges parsedAggregatorObjectList');
         }
     }
 
