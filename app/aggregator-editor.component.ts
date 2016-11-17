@@ -14,15 +14,20 @@ import * as _ from 'lodash';
         <i *ngIf="currentAggregatorDescription?.metadata?.description" class="glyphicon glyphicon-info-sign" (click)="showAggInfo=true"></i>
     </div>
     <alert *ngIf="showAggInfo && currentAggregatorDescription?.metadata?.description" class="aggregator-info-box" [type]="'info'" dismissible="true" (close)="showAggInfo=false">
-        <i class="glyphicon glyphicon-info-sign"></i>
-        {{currentAggregatorDescription?.metadata?.description}}
+        <b>General description: </b> {{currentAggregatorDescription?.metadata?.description}}
     </alert>
 
     <div *ngFor="let aggregatorProperty of currentAggregatorProperties" class="aggregator-property-group">  
-        <button #propButton (click)="onPropertyNameClick(propButton,aggregatorProperty)" type="button" [class.custom-disabled]="!aggregatorProperty.optional" [class.active]="aggregatorProperty.active" class="btn btn-default aggregator-property-name">
+        <button #propButton type="button" class="btn btn-default aggregator-property-name"
+                (click)="onPropertyNameClick(propButton,aggregatorProperty)"
+                [class.custom-disabled]="!aggregatorProperty.optional"
+                [class.active]="aggregatorProperty.active">
             {{aggregatorProperty.label || aggregatorProperty.name}}
         </button> 
-        <div *ngIf="aggregatorProperty.active" class="aggregator-property-input">
+        <alert *ngIf="showAggInfo && aggregatorProperty.description" class="aggregator-info-box aggregator-property-input" [type]="'info'">
+            {{aggregatorProperty.description}}
+        </alert>
+        <div *ngIf="!showAggInfo && aggregatorProperty.active" class="aggregator-property-input">
             <span [ngSwitch]="aggregatorProperty.property_type">
                 <input *ngSwitchCase="'text'" style="width:250px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
                 <input *ngSwitchCase="'text-small'" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
@@ -64,6 +69,12 @@ import * as _ from 'lodash';
     .aggregator-property-name {
         display: table-cell;
         width: 150px;
+        overflow-y: hidden;
+        text-overflow: ellipsis;
+    }
+
+    ::-webkit-scrollbar { 
+        display: none; 
     }
 
     .checkbox {
@@ -78,7 +89,6 @@ import * as _ from 'lodash';
 
     .aggregator-info-box {
         font-size: small;
-        text-align: center;
     }
     .aggregator-info-box .glyphicon {
         padding-right: 5px;
@@ -88,6 +98,7 @@ import * as _ from 'lodash';
         width: 100%;
         padding-bottom: 15px;
         padding-top: 5px;
+        padding-right: 20px;
         margin-top: -5px;
         position: relative;
         font-size: small;
@@ -97,7 +108,7 @@ import * as _ from 'lodash';
     .aggregator-info-icon .glyphicon {
         position: absolute;
         right: 0px;
-        
+        cursor: pointer;
     }
   `],
     styleUrls: ['css/custom-checkbox.css']

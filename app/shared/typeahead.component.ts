@@ -7,7 +7,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
 	<div class="form-group has-feedback">
 		<template #customItemTemplate let-model="item" let-index="index">
     		<div *ngIf="!typeaheadOptionsLimit || index<typeaheadOptionsLimit-1">{{model}}</div>
-			<div *ngIf="index===typeaheadOptionsLimit-1"><b>And others...</b></div>
+			<div *ngIf="index===typeaheadOptionsLimit-1">{{model}}<div style="padding-top:5px;"><b>And others...</b></div></div>
   		</template>
 		<input [(ngModel)]="value"
         (ngModelChange)="valueChange.emit(value)"

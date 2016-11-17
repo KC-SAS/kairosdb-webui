@@ -170,6 +170,30 @@ export const AGGREGATORS: {} = {
                 description: "This is a test aggregator... to do tests !", //mandatory
                 label: "Test" //mandatory
             },
+        },
+        {
+            structure: {
+                name: "corner_cases", //mandatory
+                long_prop_name: {
+                    property_type: "long",
+                    label: "Very very long property name label hahaha got you didn' anticipate this :-)", //mandatory
+                    description: "",
+                    default: true,
+                    optional: true
+                },
+                long_desc: {
+                    property_type: "long",
+                    label: "Long description", //mandatory
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras fringilla nibh et gravida sagittis. Suspendisse ut orci in arcu laoreet ultricies. Suspendisse arcu sapien, commodo id nulla sed, malesuada aliquet lorem. Etiam elementum eleifend viverra. Ut cursus tempor mauris quis faucibus. Sed sollicitudin quis leo eget pretium. Vestibulum molestie neque non ipsum malesuada consequat. Quisque porttitor, nunc in auctor volutpat, nisl lacus consectetur quam, eu pharetra est quam sit amet magna. Donec a auctor ligula. Fusce erat ligula, lobortis id massa rutrum, placerat eleifend leo. Maecenas rhoncus pharetra quam eu mollis. Morbi vitae interdum ex, at feugiat mi. Nullam semper lectus at est dignissim iaculis. Cras gravida turpis augue, eget sollicitudin sapien luctus vel. Nam consectetur lorem sit amet aliquet elementum. Integer sit amet enim pulvinar, ullamcorper lacus ut, rutrum lacus. Nam congue mollis leo id sodales. Mauris et hendrerit enim. Vestibulum consectetur ipsum massa, a vestibulum lorem blandit vitae. Curabitur vehicula quis est dapibus auctor. Duis dolor mauris, convallis sit amet aliquam ac, suscipit eget sapien. Sed commodo sapien sed augue placerat, a pellentesque ante pharetra. Sed quis felis id nibh pharetra laoreet ac id nisl. Pellentesque augue turpis, porta ac arcu vel, pellentesque elementum elit. In bibendum at turpis a condimentum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vivamus suscipit pharetra mauris sit amet ultricies. Curabitur mauris libero, semper eget metus nec, cursus blandit nisl. Aliquam dapibus gravida lorem vel tempor. Ut viverra nisi vel sapien consequat, a dignissim enim facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in ullamcorper diam. Mauris rutrum quam lacus, ac accumsan turpis viverra ut. Mauris risus ex, egestas vitae sollicitudin id, sagittis id odio. Pellentesque suscipit urna maximus, euismod ante ac, finibus nulla. Vivamus eros risus, elementum at neque cursus, auctor mattis ante. Vivamus viverra massa sed dignissim bibendum. Vestibulum placerat ligula eros, vel porttitor urna semper sit amet. ",
+                    default: true,
+                    optional: true
+                }
+
+            },
+            metadata: {
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras fringilla nibh et gravida sagittis. Suspendisse ut orci in arcu laoreet ultricies. Suspendisse arcu sapien, commodo id nulla sed, malesuada aliquet lorem. Etiam elementum eleifend viverra. Ut cursus tempor mauris quis faucibus. Sed sollicitudin quis leo eget pretium. Vestibulum molestie neque non ipsum malesuada consequat. Quisque porttitor, nunc in auctor volutpat, nisl lacus consectetur quam, eu pharetra est quam sit amet magna. Donec a auctor ligula. Fusce erat ligula, lobortis id massa rutrum, placerat eleifend leo. Maecenas rhoncus pharetra quam eu mollis. Morbi vitae interdum ex, at feugiat mi. Nullam semper lectus at est dignissim iaculis. Cras gravida turpis augue, eget sollicitudin sapien luctus vel. Nam consectetur lorem sit amet aliquet elementum. Integer sit amet enim pulvinar, ullamcorper lacus ut, rutrum lacus. Nam congue mollis leo id sodales. Mauris et hendrerit enim. Vestibulum consectetur ipsum massa, a vestibulum lorem blandit vitae. Curabitur vehicula quis est dapibus auctor. Duis dolor mauris, convallis sit amet aliquam ac, suscipit eget sapien. Sed commodo sapien sed augue placerat, a pellentesque ante pharetra. Sed quis felis id nibh pharetra laoreet ac id nisl. Pellentesque augue turpis, porta ac arcu vel, pellentesque elementum elit. In bibendum at turpis a condimentum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vivamus suscipit pharetra mauris sit amet ultricies. Curabitur mauris libero, semper eget metus nec, cursus blandit nisl. Aliquam dapibus gravida lorem vel tempor. Ut viverra nisi vel sapien consequat, a dignissim enim facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in ullamcorper diam. Mauris rutrum quam lacus, ac accumsan turpis viverra ut. Mauris risus ex, egestas vitae sollicitudin id, sagittis id odio. Pellentesque suscipit urna maximus, euismod ante ac, finibus nulla. Vivamus eros risus, elementum at neque cursus, auctor mattis ante. Vivamus viverra massa sed dignissim bibendum. Vestibulum placerat ligula eros, vel porttitor urna semper sit amet. ", //mandatory
+                label: "Very very long aggregator name label hahaha got you didn' anticipate this :-)" //mandatory
+            },
         }
 
     ]

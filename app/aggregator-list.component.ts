@@ -168,7 +168,6 @@ export class AggregatorListComponent implements OnChanges, OnInit {
     }
 
     onAggregatorEdit(idx, newAggregatorObject){
-        console.log('onAggregatorEdit '+JSON.stringify(newAggregatorObject));
         this.generatedAggregatorObjectList[idx]=newAggregatorObject;
         this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
     }
