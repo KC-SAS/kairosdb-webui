@@ -119,7 +119,6 @@ export class AggregatorListComponent implements OnChanges, OnInit {
             this.selectedAggregatorIndex = undefined;
             this.workingAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.identity) || [];
             this.generatedAggregatorObjectList = _.map(this.parsedAggregatorObjectList,_.identity) || [];
-            this.aggregatorObjectListChange.emit(this.generatedAggregatorObjectList);
         }
     }
 

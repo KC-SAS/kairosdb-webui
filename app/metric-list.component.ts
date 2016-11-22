@@ -6,18 +6,14 @@ import * as _ from 'lodash';
     selector: 'kairos-metric-list',
     template: `
             <accordion [closeOthers]="true" >
-                <accordion-group #group *ngFor="let metric of workingMetricList; let idx = index">
+                <accordion-group #group *ngFor="let metric of workingMetricList; let idx = index" [isOpen]="idx===selectedMetricIndex">
                     <div accordion-heading>
-                        {{metric.name}}
+                        {{generatedMetricList[idx]?.name || 'metric '+idx}}
                         <i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group?.isOpen, 'glyphicon-chevron-right': !group?.isOpen}"></i>
                     </div>
                     <kairos-metric-editor 
-                        [metricName]="metric.name" 
-                        (metricNameChange)="assignOrDelete('metrics['+idx+'].name',$event)"
-                        [parsedSelectedTagObject]="metric.tags" 
-                        (selectedTagObjectChange)="assignOrDelete('metrics['+idx+'].tags',$event)"
-                        [parsedAggregatorObjectList]="metric.aggregators"
-                        (aggregatorObjectListChange)="assignOrDelete('metrics['+idx+'].aggregators',$event)"
+                        [parsedMetricObject]="workingMetricList[idx]"
+                        (metricObjectChange)="onMetricEdit(idx,$event)"
                     ></kairos-metric-editor>
                 </accordion-group>
             </accordion>
@@ -48,11 +44,22 @@ export class MetricListComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if(changes['parsedMetricList']){
-            this.selectedMetricIndex = undefined;
+            this.selectedMetricIndex = this.parsedMetricList ? this.parsedMetricList.length-1 : undefined;
             this.workingMetricList = _.map(this.parsedMetricList,_.identity) || [];
             this.generatedMetricList = _.map(this.parsedMetricList,_.identity) || [];
-            this.metricListChange.emit(this.generatedMetricList);
         }
+    }
+
+    onMetricEdit(idx, newMetricObject){
+        this.generatedMetricList[idx]=newMetricObject;
+        this.metricListChange.emit(this.generatedMetricList);
+    }
+
+    addNew() {
+        this.workingMetricList.push({});
+        this.generatedMetricList.push({});
+        this.metricListChange.emit(this.generatedMetricList);
+        this.selectedMetricIndex=this.workingMetricList.length-1;
     }
 
 }

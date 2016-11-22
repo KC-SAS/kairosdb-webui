@@ -17,7 +17,8 @@ import * as _ from 'lodash';
     <td class="input-col">
         <kairos-typeahead
             #metricNameField
-            [(value)]="metricName"
+            [value]="parsedMetricObject.name"
+            (valueChange)="generatedMetricObject.name=$event;metricObjectChange.emit(generatedMetricObject);"
             [typeaheadSource]="metricNames"
 		    [typeaheadOptionsLimit]="100"
             [typeaheadMinLength]="0"
@@ -46,28 +47,8 @@ import * as _ from 'lodash';
 </div>
 <div class="category-body">
     <kairos-tag-list #tagListComponent
-        [parsedSelectedTagObject]="parsedSelectedTagObject" 
-        (selectedTagObjectChange)="selectedTagObjectChange.emit($event)"
-        [metricName]="metricName"
-        [tagValuesForNames]="tagValuesForNames"
-        (error)="duplicatedTagNames=$event"
-        >
-    </kairos-tag-list>
-</div>
-
-<!-- GROUP BY -->
-<div class="category-header">
-    <h5 class="category-title">Group by</h5> 
-    <button type="button" class="btn btn-default category-add" (click)="tagListComponent.addNew()"><i class="glyphicon glyphicon-plus"></i></button>
-    <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames?.length>0">
-        <span class="glyphicon glyphicon-remove"></span>
-        Duplicated tag name <em>{{duplicatedTagNames?.join()}}</em>. <a (click)="tagListComponent.merge()">Click here to merge</a>
-    </div>
-</div>
-<div class="category-body">
-    <kairos-tag-list #tagListComponent
-        [parsedSelectedTagObject]="parsedSelectedTagObject" 
-        (selectedTagObjectChange)="selectedTagObjectChange.emit($event)"
+        [parsedSelectedTagObject]="parsedMetricObject.tags" 
+        (selectedTagObjectChange)="generatedMetricObject.tags=$event;metricObjectChange.emit(generatedMetricObject)"
         [metricName]="metricName"
         [tagValuesForNames]="tagValuesForNames"
         (error)="duplicatedTagNames=$event"
@@ -81,8 +62,8 @@ import * as _ from 'lodash';
     <button type="button" (click)="aggregatorListComponent.addNew()" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
 </div>
 <kairos-aggregator-list #aggregatorListComponent class="category-body"
-    [parsedAggregatorObjectList]="parsedAggregatorObjectList" 
-    (aggregatorObjectListChange)="aggregatorObjectListChange.emit($event)"
+    [parsedAggregatorObjectList]="parsedMetricObject.aggregators" 
+    (aggregatorObjectListChange)="generatedMetricObject.aggregators=$event;metricObjectChange.emit(generatedMetricObject)"
 ></kairos-aggregator-list>
   `,
     styles: [`
@@ -171,26 +152,14 @@ import * as _ from 'lodash';
 export class MetricEditorComponent implements OnChanges, OnInit {
 
     @Input()
-    public metric: any;
-    @Output()
-    metricChange = new EventEmitter<any>();
+    public parsedMetricObject: {};
 
-    @Input()
-    public parsedSelectedTagObject: {};
-    @Output()
-    public selectedTagObjectChange = new EventEmitter<{}>();
+    public generatedMetricObject: {};
 
-    @Input()
-    public parsedAggregatorObjectList: {}[];
     @Output()
-    public aggregatorObjectListChange = new EventEmitter<{}[]>();
+    public metricObjectChange = new EventEmitter<any>();
 
     public metricNames: string[];
-
-    @Input()
-    public metricName: string;
-    @Output()
-    public metricNameChange = new EventEmitter<string>();
 
     private metricNameSubject: Subject<string>;
 
@@ -202,10 +171,12 @@ export class MetricEditorComponent implements OnChanges, OnInit {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
         this.tagValuesForNames = {};
+        this.generatedMetricObject = {};
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if(changes['parsedAggregatorObjectList']){
+        if(changes['parsedMetricObject']){
+            this.generatedMetricObject = _.cloneDeep(this.parsedMetricObject);
         }
     }
 
@@ -222,11 +193,11 @@ export class MetricEditorComponent implements OnChanges, OnInit {
     refreshMetricNames() {
         this.refreshingMetricNames = true;
         this.queryService.getMetricNames().then(resp => { this.refreshingMetricNames = false; this.metricNames = resp; });
-        this.metricNameSubject.next(this.metricName);
+        this.metricNameSubject.next(this.generatedMetricObject['name']);
     }
 
     onMetricNameUpdate() {
-        this.metricNameSubject.next(this.metricName);
+        this.metricNameSubject.next(this.generatedMetricObject['name']);
     }
 
 }

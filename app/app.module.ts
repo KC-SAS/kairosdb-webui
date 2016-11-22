@@ -10,7 +10,7 @@ import { SharedModule } from './shared/shared.module';
 import { QueryService } from './query.service';
 
 import { MetricEditorComponent } from './metric-editor.component';
-//import { MetricListComponent } from './metric-list.component';
+import { MetricListComponent } from './metric-list.component';
 import { TagEditorComponent } from './tag-editor.component';
 import { TagListComponent } from './tag-list.component';
 import { AggregatorListComponent } from './aggregator-list.component';
@@ -24,7 +24,7 @@ import { TimeRangeModule } from './time/time-range.module';
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
                   TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule, SharedModule ],
-  declarations: [ AppComponent, QueryComponent, MetricEditorComponent, /*MetricListComponent,*/ TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent, LineChartComponent, QueryStatusComponent ],
+  declarations: [ AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent, TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent, LineChartComponent, QueryStatusComponent ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService ]
 })

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { QueryService } from './query.service';
 import * as _ from 'lodash';
 
@@ -17,26 +17,12 @@ import * as _ from 'lodash';
         <div class="panel panel-primary">
             <div class="panel-heading"><h4 class="panel-title">
                 Metrics 
-                <i *ngIf="jsonEditorDisabled" (click)="jsonEditorDisabled=false;jsonarea.focus()" class="glyphicon glyphicon-plus panel-header-icon"></i>
+                <i (click)="kairosMetricList.addNew()" style="font-size:small;" class="glyphicon glyphicon-plus panel-header-icon"></i>
             </h4></div>
-            <div>
-                <accordion [closeOthers]="true" >
-                <accordion-group #group *ngFor="let metric of parsedQuery.metrics; let idx = index">
-                    <div accordion-heading>
-                        {{metric.name}}
-                        <i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group?.isOpen, 'glyphicon-chevron-right': !group?.isOpen}"></i>
-                    </div>
-                    <kairos-metric-editor 
-                        [metricName]="metric.name" 
-                        (metricNameChange)="assignOrDelete('metrics['+idx+'].name',$event)"
-                        [parsedSelectedTagObject]="metric.tags" 
-                        (selectedTagObjectChange)="assignOrDelete('metrics['+idx+'].tags',$event)"
-                        [parsedAggregatorObjectList]="metric.aggregators"
-                        (aggregatorObjectListChange)="assignOrDelete('metrics['+idx+'].aggregators',$event)"
-                    ></kairos-metric-editor>
-                </accordion-group>
-                </accordion>
-            </div>
+            <kairos-metric-list #kairosMetricList
+                [parsedMetricList]="parsedQuery.metrics" 
+                (metricListChange)="assignOrDelete('metrics',$event)"
+            ></kairos-metric-list>
         </div>
         <div class="panel panel-primary">
             <div class="panel-heading"><h4 class="panel-title">
@@ -92,7 +78,7 @@ import * as _ from 'lodash';
     }
   `]
 })
-export class QueryComponent {
+export class QueryComponent implements OnInit{
 
     public queryResult: {}[];
     public statusModel: {};
@@ -107,18 +93,20 @@ export class QueryComponent {
 
     public constructor(private queryService: QueryService) {
         this.jsonEditorDisabled = true;
-        this.parsedQuery = {
-            start_relative: { value: 1, unit: 'hours' },
-            metrics: [{
-                name: "kairosdb.datastore.query_time",
-                tags: { host: ['RD-PC'] }
+    }
+
+    ngOnInit(){
+        this.parse(`{
+            "start_relative": { "value": 1, "unit": "hours" },
+            "metrics": [{
+                "name": "kairosdb.datastore.query_time",
+                "tags": { "host": ["RD-PC"] }
             }]
-        };
-        this.generatedQuery = _.cloneDeep(this.parsedQuery);
-        this.displayedQuery = this.toPrettyJson(this.generatedQuery);
+        }`);
     }
 
     assignOrDelete(field, value) {
+        console.log('assign:'+field+' with value:'+value);
         if (value === undefined || value === null || value === '') {
             _.unset(this.generatedQuery, field);
         }
@@ -129,7 +117,6 @@ export class QueryComponent {
     }
 
     parse(jsonQuery: string) {
-        console.log('parse()')
         try {
             this.parsedQuery = JSON.parse(jsonQuery);
             this.generatedQuery = _.cloneDeep(this.parsedQuery);
