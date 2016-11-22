@@ -3,6 +3,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
+import * as validation from './utils/validation'
 
 
 @Component({
@@ -28,26 +29,22 @@ import * as _ from 'lodash';
             {{aggregatorProperty.description}}
         </alert>
         <div *ngIf="!showAggInfo && aggregatorProperty.active" class="aggregator-property-input">
-            <span [ngSwitch]="aggregatorProperty.property_type">
-                <input *ngSwitchCase="'text'" style="width:250px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
-                <input *ngSwitchCase="'text-small'" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
-                <input *ngSwitchCase="'text-large'" style="width:100%;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
-                <textarea *ngSwitchCase="'textarea'" style="width:100%;resize:vertical;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"></textarea>
-                <select *ngSwitchCase="'enum'" style="width:inherit;" class="form-control" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()">
+                <input *ngIf="'string'===aggregatorProperty.property_type && !aggregatorProperty.multiline" style="width:100%;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)" class="form-control"/>
+                <textarea *ngIf="'string'===aggregatorProperty.property_type && aggregatorProperty.multiline" style="width:100%;resize:vertical;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)" class="form-control"></textarea>
+                <select *ngIf="'enum'" style="width:inherit;" class="form-control" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)">
                     <option *ngFor="let aggregatorPropertyOption of aggregatorProperty.options;" [value]="aggregatorPropertyOption">
                         {{aggregatorPropertyOption}}
                     </option>
                 </select>
-                <input *ngSwitchCase="'integer'" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
-                <input *ngSwitchCase="'long'" style="width:200px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()" class="form-control"/>
-                <div *ngSwitchCase="'boolean'" class="checkbox">
+                <input *ngIf="'integer'===aggregatorProperty.property_type" style="width:100px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)" class="form-control"/>
+                <input *ngIf="'long'===aggregatorProperty.property_type || 'double'===aggregatorProperty.property_type" style="width:200px;" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)" class="form-control"/>
+                <div *ngIf="'boolean'===aggregatorProperty.property_type" class="checkbox">
                     <label style="font-size: 1.0em">
-                        <input type="checkbox" value="" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="updateAggregatorObject()"> 
+                        <input type="checkbox" value="" [(ngModel)]="aggregatorProperty.value" (ngModelChange)="onPropertyInputChange(aggregatorProperty)"> 
                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                     </label>
                 </div>
-                <span *ngSwitchDefault>other</span>
-            </span>
+                <div class="fieldValidation" *ngIf="aggregatorProperty.error">{{aggregatorProperty.error}}</div>
         </div>
     </div>
 
@@ -110,6 +107,12 @@ import * as _ from 'lodash';
         right: 0px;
         cursor: pointer;
     }
+
+    .fieldValidation {
+        font-size: x-small;
+        color: red;
+        margin-bottom: -5px;
+    }
   `],
     styleUrls: ['css/custom-checkbox.css']
 })
@@ -158,9 +161,10 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
                     subPropertiesNames.forEach((subPropertyName) => {
                         let subProperty = _.clone(property['property_type'][subPropertyName]);
                         subProperty['name'] = propertyName + '.' + subPropertyName;
-                        let currentVal = _.get(aggregatorObject, subProperty['name']); 
+                        let currentVal = _.get(aggregatorObject, subProperty['name']);
                         subProperty['active'] = currentVal !== undefined || !subProperty['optional'];
                         subProperty['value'] = currentVal || this.getDefault(subProperty['property_type']);
+                        this.validate(subProperty);
                         newAggregatorProperties.push(subProperty);
                     });
                 }
@@ -169,6 +173,7 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
                     let currentVal = _.get(aggregatorObject, property['name']);
                     property['active'] = currentVal !== undefined || !property['optional'];
                     property['value'] = currentVal || this.getDefault(property['property_type']);
+                    this.validate(property);
                     newAggregatorProperties.push(property);
                 }
             });
@@ -180,12 +185,12 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
     ngOnInit() {
     }
 
-    private getDefault(propertyType:string): any{
-        if(propertyType==='boolean'){
+    private getDefault(propertyType: string): any {
+        if (propertyType === 'boolean') {
             return false;
         }
 
-        else{
+        else {
             return '';
         }
 
@@ -209,6 +214,28 @@ export class AggregatorEditorComponent implements OnChanges, OnInit {
         propButton.blur();
         aggregatorProperty.active = !aggregatorProperty.active;
         this.updateAggregatorObject();
+    }
+
+    validate(aggregatorProperty: {}) {
+        if (aggregatorProperty['property_type'] == 'integer' && !validation.isInteger(aggregatorProperty['value'])) {
+            aggregatorProperty['error'] = 'Invalid integer';
+        }
+        else if (aggregatorProperty['property_type'] == 'long' && !validation.isLong(aggregatorProperty['value'])) {
+            aggregatorProperty['error'] = 'Invalid long';
+        }
+        else if (aggregatorProperty['property_type'] == 'double' && !validation.isDouble(aggregatorProperty['value'])) {
+            aggregatorProperty['error'] = 'Invalid double';
+        }
+        else {
+            aggregatorProperty['error'] = undefined;
+        }
+        // TODO use validation field
+    }
+
+    onPropertyInputChange(aggregatorProperty: {}) {
+        this.validate(aggregatorProperty);
+        this.updateAggregatorObject();
+
     }
 
 

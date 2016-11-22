@@ -136,29 +136,16 @@ export const AGGREGATORS: {} = {
                     default: false,
                     optional: true
                 },
-                text_small_prop: {
-                    property_type: "text-small",
-                    label: "Small text prop", //mandatory
-                    description: "25%",
-                    default: false,
-                    optional: false
-                },
                 text_prop: {
-                    property_type: "text",
-                    label: "Regular text prop", //mandatory
-                    description: "50%",
-                    default: false,
-                    optional: false
-                },
-                text_large_prop: {
-                    property_type: "text-large",
+                    property_type: "string",
                     label: "Large text prop", //mandatory
                     description: "100%",
                     default: false,
                     optional: false
                 },
                 textarea_prop: {
-                    property_type: "textarea",
+                    property_type: "string",
+                    multiline: true,
                     label: "Text area", //mandatory
                     description: "multiline text",
                     default: false,

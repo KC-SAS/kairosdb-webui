@@ -6,7 +6,7 @@ import { TagEditorComponent } from './tag-editor.component';
 import * as _ from 'lodash';
 
 @Component({
-    selector: 'kairos-metric',
+    selector: 'kairos-metric-editor',
     template: `
 
 <table >
@@ -37,11 +37,31 @@ import * as _ from 'lodash';
 
 <!-- TAGS -->
 <div class="category-header">
-    <h5 class="category-title">Tags</h5> 
+    <h5 class="category-title">Tag filters</h5> 
     <button type="button" class="btn btn-default category-add" (click)="tagListComponent.addNew()"><i class="glyphicon glyphicon-plus"></i></button>
     <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames?.length>0">
         <span class="glyphicon glyphicon-remove"></span>
-        Duplicated tag name <em>{{duplicatedTagNames?.join()}}</em>. <a (click)=tagListComponent.merge()>Click here to merge</a>
+        Duplicated tag name <em>{{duplicatedTagNames?.join()}}</em>. <a (click)="tagListComponent.merge()">Click here to merge</a>
+    </div>
+</div>
+<div class="category-body">
+    <kairos-tag-list #tagListComponent
+        [parsedSelectedTagObject]="parsedSelectedTagObject" 
+        (selectedTagObjectChange)="selectedTagObjectChange.emit($event)"
+        [metricName]="metricName"
+        [tagValuesForNames]="tagValuesForNames"
+        (error)="duplicatedTagNames=$event"
+        >
+    </kairos-tag-list>
+</div>
+
+<!-- GROUP BY -->
+<div class="category-header">
+    <h5 class="category-title">Group by</h5> 
+    <button type="button" class="btn btn-default category-add" (click)="tagListComponent.addNew()"><i class="glyphicon glyphicon-plus"></i></button>
+    <div class="category-error alert alert-danger" *ngIf="duplicatedTagNames?.length>0">
+        <span class="glyphicon glyphicon-remove"></span>
+        Duplicated tag name <em>{{duplicatedTagNames?.join()}}</em>. <a (click)="tagListComponent.merge()">Click here to merge</a>
     </div>
 </div>
 <div class="category-body">
@@ -148,7 +168,7 @@ import * as _ from 'lodash';
     }
   `]
 })
-export class MetricComponent implements OnChanges, OnInit {
+export class MetricEditorComponent implements OnChanges, OnInit {
 
     @Input()
     public metric: any;

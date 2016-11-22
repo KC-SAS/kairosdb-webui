@@ -9,11 +9,14 @@ import { SharedModule } from './shared/shared.module';
 
 import { QueryService } from './query.service';
 
-import { MetricComponent } from './metric.component';
+import { MetricEditorComponent } from './metric-editor.component';
+//import { MetricListComponent } from './metric-list.component';
 import { TagEditorComponent } from './tag-editor.component';
 import { TagListComponent } from './tag-list.component';
 import { AggregatorListComponent } from './aggregator-list.component';
 import { AggregatorEditorComponent } from './aggregator-editor.component';
+import { LineChartComponent } from './line-chart.component';
+import { QueryStatusComponent } from './query-status.component';
 
 import { AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule } from 'ng2-bootstrap/ng2-bootstrap';
 import { TimeRangeModule } from './time/time-range.module';
@@ -21,7 +24,7 @@ import { TimeRangeModule } from './time/time-range.module';
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
                   TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule, SharedModule ],
-  declarations: [ AppComponent, QueryComponent, MetricComponent, TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent ],
+  declarations: [ AppComponent, QueryComponent, MetricEditorComponent, /*MetricListComponent,*/ TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent, LineChartComponent, QueryStatusComponent ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService ]
 })

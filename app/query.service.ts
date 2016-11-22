@@ -9,6 +9,7 @@ export class QueryService {
   private headers = new Headers({ 'Content-Type': 'application/json' });
   private metricNamesUrl = 'http://localhost:8080/api/v1/metricnames';
   private tagsUrl = 'http://localhost:8080/api/v1/datapoints/query/tags';
+  private queryUrl = 'http://localhost:8080/api/v1/datapoints/query';
 
   constructor(private http: Http) { }
 
@@ -32,13 +33,20 @@ export class QueryService {
       .catch(this.handleError);
   }
 
+  executeQuery(query: string): Promise<any> {
+    return this.http.post(this.queryUrl, query, { headers: this.headers })
+      .toPromise()
+      .then(response => response.json().queries || [])
+      .catch(this.handleError);
+  }
+
   getAggregators(): Promise<any> {
     return Promise.resolve(AGGREGATORS);
   }
 
 
   private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error); // for demo purposes only
+    console.error('Query service logging: promise rejected with reason', error); // for demo purposes only
     return Promise.reject(error.message || error);
   }
 }
