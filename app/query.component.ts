@@ -17,7 +17,7 @@ import * as _ from 'lodash';
         <div class="panel panel-primary">
             <div class="panel-heading"><h4 class="panel-title">
                 Metrics 
-                <i (click)="kairosMetricList.addNew()" style="font-size:small;" class="glyphicon glyphicon-plus panel-header-icon"></i>
+                <i (click)="kairosMetricList.addNew()" tooltipPopupDelay='1000' tooltip="Add new empty metric" style="font-size:small;" class="glyphicon glyphicon-plus panel-header-icon"></i>
             </h4></div>
             <kairos-metric-list #kairosMetricList
                 [parsedMetricList]="parsedQuery.metrics" 
@@ -27,7 +27,7 @@ import * as _ from 'lodash';
         <div class="panel panel-primary">
             <div class="panel-heading"><h4 class="panel-title">
                 Json Query 
-                <i *ngIf="jsonEditorDisabled" (click)="jsonEditorDisabled=false;jsonarea.focus()" class="glyphicon glyphicon-pencil panel-header-icon"></i>
+                <i *ngIf="jsonEditorDisabled" (click)="jsonEditorDisabled=false;jsonarea.focus()" tooltipPopupDelay='1000' tooltip="Edit query json directly" class="glyphicon glyphicon-pencil panel-header-icon"></i>
             </h4></div>
             <textarea #jsonarea class="form-control json-area" rows="10"
                 (blur)="parse(jsonarea.value); jsonEditorDisabled=true;" 

@@ -5,25 +5,53 @@ import * as _ from 'lodash';
 @Component({
     selector: 'kairos-metric-list',
     template: `
-            <accordion [closeOthers]="true" >
-                <accordion-group #group *ngFor="let metric of workingMetricList; let idx = index" [isOpen]="idx===selectedMetricIndex">
-                    <div accordion-heading>
-                        {{generatedMetricList[idx]?.name || 'metric '+idx}}
-                        <i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group?.isOpen, 'glyphicon-chevron-right': !group?.isOpen}"></i>
+                <div class="panel panel-default" #group *ngFor="let metric of workingMetricList; let idx = index">
+                    <div class="accordion-toggle panel-heading" (click)="selectedMetricIndex=(selectedMetricIndex===idx)?undefined:idx">
+                            {{generatedMetricList[idx]?.name || 'New Metric'}}
+                            <button tooltipPopupDelay='1000' tooltip="Delete this metric" type="button" (click)="deleteMetric(idx); $event.stopPropagation();" class="btn btn-default accordion-heading-button pull-right">
+                                <i style="top: .5px" class="glyphicon glyphicon-remove"></i>
+                            </button>
+                            <button tooltipPopupDelay='1000' tooltip="Duplicate this metric" type="button" (click)="duplicateMetric(idx); $event.stopPropagation();" class="btn btn-default accordion-heading-button pull-right">
+                                <i style="top: .5px" class="glyphicon glyphicon-duplicate"></i>
+                            </button>
                     </div>
-                    <kairos-metric-editor 
-                        [parsedMetricObject]="workingMetricList[idx]"
-                        (metricObjectChange)="onMetricEdit(idx,$event)"
-                    ></kairos-metric-editor>
-                </accordion-group>
-            </accordion>
+                    <div class="panel-body" [class.collapsed]="idx!==selectedMetricIndex">
+                        <kairos-metric-editor 
+                            [parsedMetricObject]="workingMetricList[idx]"
+                            (metricObjectChange)="onMetricEdit(idx,$event)"
+                        ></kairos-metric-editor>
+                    </div>
+                </div>
   `,
     styles: [`
-    div[accordion-heading] {
+    .panel {
+        margin: 3px;
+    }
+    .panel-body {
+        overflow: hidden;
+        -webkit-transition: all .1s ease;
+        -moz-transition: all .1s ease;
+        transition: all .1s ease;
+    }
+    .accordion-toggle {
         font-size: smaller;
         font-weight: 600;
         color: #606060;
+        cursor: pointer;
     }
+    .accordion-heading-button {
+        font-size: smaller;
+        color: #606060;
+        width: 20px;
+        padding: 4px;
+        margin-left: 10px
+    }
+    .collapsed {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        height: 0px;
+    }
+
   `]
 })
 export class MetricListComponent implements OnChanges, OnInit {
@@ -60,6 +88,24 @@ export class MetricListComponent implements OnChanges, OnInit {
         this.generatedMetricList.push({});
         this.metricListChange.emit(this.generatedMetricList);
         this.selectedMetricIndex=this.workingMetricList.length-1;
+    }
+
+    deleteMetric(idx: number){
+        if(idx===this.selectedMetricIndex && idx<this.generatedMetricList.length){
+            this.selectedMetricIndex=undefined;
+        }
+        else if(this.selectedMetricIndex && idx<this.selectedMetricIndex){
+            this.selectedMetricIndex--;
+        }
+        _.pullAt(this.generatedMetricList, idx);
+        _.pullAt(this.workingMetricList, idx);
+        this.metricListChange.emit(this.generatedMetricList);
+    }
+
+    duplicateMetric(idx: number){
+        this.workingMetricList.push(_.cloneDeep(this.generatedMetricList[idx]));
+        this.generatedMetricList.push(_.cloneDeep(this.generatedMetricList[idx]));
+        this.metricListChange.emit(this.generatedMetricList);
     }
 
 }

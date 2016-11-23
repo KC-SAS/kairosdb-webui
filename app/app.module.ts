@@ -18,12 +18,12 @@ import { AggregatorEditorComponent } from './aggregator-editor.component';
 import { LineChartComponent } from './line-chart.component';
 import { QueryStatusComponent } from './query-status.component';
 
-import { AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule } from 'ng2-bootstrap/ng2-bootstrap';
+import { AlertModule, ButtonsModule, TypeaheadModule, TooltipModule } from 'ng2-bootstrap/ng2-bootstrap';
 import { TimeRangeModule } from './time/time-range.module';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
-                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, AccordionModule, TooltipModule, SharedModule ],
+                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, TooltipModule, SharedModule ],
   declarations: [ AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent, TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent, LineChartComponent, QueryStatusComponent ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService ]
