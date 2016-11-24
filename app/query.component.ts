@@ -99,14 +99,12 @@ export class QueryComponent implements OnInit{
         this.parse(`{
             "start_relative": { "value": 1, "unit": "hours" },
             "metrics": [{
-                "name": "kairosdb.datastore.query_time",
-                "tags": { "host": ["RD-PC"] }
+                "name": ""
             }]
         }`);
     }
 
     assignOrDelete(field, value) {
-        console.log('assign:'+field+' with value:'+value);
         if (value === undefined || value === null || value === '') {
             _.unset(this.generatedQuery, field);
         }

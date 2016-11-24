@@ -8,13 +8,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 
 import { QueryService } from './query.service';
+import { DescriptorService } from './descriptors.service';
 
 import { MetricEditorComponent } from './metric-editor.component';
 import { MetricListComponent } from './metric-list.component';
 import { TagEditorComponent } from './tag-editor.component';
 import { TagListComponent } from './tag-list.component';
-import { AggregatorListComponent } from './aggregator-list.component';
-import { AggregatorEditorComponent } from './aggregator-editor.component';
+import { PsListComponent } from './generic-ps-list.component';
+import { PsEditorComponent } from './generic-ps-editor.component';
+import { PsFieldComponent } from './generic-ps-field.component';
 import { LineChartComponent } from './line-chart.component';
 import { QueryStatusComponent } from './query-status.component';
 
@@ -24,8 +26,12 @@ import { TimeRangeModule } from './time/time-range.module';
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
                   TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, TooltipModule, SharedModule ],
-  declarations: [ AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent, TagEditorComponent, TagListComponent, AggregatorListComponent, AggregatorEditorComponent, LineChartComponent, QueryStatusComponent ],
+  declarations: [ 
+    AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent, 
+    TagEditorComponent, TagListComponent, PsListComponent, PsEditorComponent, PsFieldComponent,
+    LineChartComponent, QueryStatusComponent 
+  ],
   bootstrap:    [ AppComponent ],
-  providers:    [ QueryService ]
+  providers:    [ QueryService, DescriptorService ]
 })
 export class AppModule { }

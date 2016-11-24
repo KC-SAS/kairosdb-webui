@@ -6,7 +6,7 @@ import * as _ from 'lodash';
     selector: 'kairos-metric-list',
     template: `
                 <div class="panel panel-default" #group *ngFor="let metric of workingMetricList; let idx = index">
-                    <div class="accordion-toggle panel-heading" (click)="selectedMetricIndex=(selectedMetricIndex===idx)?undefined:idx">
+                    <div class="accordion-toggle panel-heading" (click)="onPanelToggle(idx)">
                             {{generatedMetricList[idx]?.name || 'New Metric'}}
                             <button tooltipPopupDelay='1000' tooltip="Delete this metric" type="button" (click)="deleteMetric(idx); $event.stopPropagation();" class="btn btn-default accordion-heading-button pull-right">
                                 <i style="top: .5px" class="glyphicon glyphicon-remove"></i>
@@ -17,8 +17,8 @@ import * as _ from 'lodash';
                     </div>
                     <div class="panel-body" [class.collapsed]="idx!==selectedMetricIndex">
                         <kairos-metric-editor 
-                            [parsedMetricObject]="workingMetricList[idx]"
-                            (metricObjectChange)="onMetricEdit(idx,$event)"
+                        [parsedMetricObject]="metric" 
+                        (metricObjectChange)="onMetricEdit(idx,$event)"
                         ></kairos-metric-editor>
                     </div>
                 </div>
@@ -76,6 +76,10 @@ export class MetricListComponent implements OnChanges, OnInit {
             this.workingMetricList = _.map(this.parsedMetricList,_.identity) || [];
             this.generatedMetricList = _.map(this.parsedMetricList,_.identity) || [];
         }
+    }
+
+    onPanelToggle(idx:number){
+        this.selectedMetricIndex=(this.selectedMetricIndex===idx)?undefined:idx
     }
 
     onMetricEdit(idx, newMetricObject){

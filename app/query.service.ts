@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { AGGREGATORS } from './mocks/mock-aggregators'
 import * as generator from './mocks/mock-metricnames'
 
 @Injectable()
@@ -39,11 +38,6 @@ export class QueryService {
       .then(response => response.json().queries || [])
       .catch(this.handleError);
   }
-
-  getAggregators(): Promise<any> {
-    return Promise.resolve(AGGREGATORS);
-  }
-
 
   private handleError(error: any): Promise<any> {
     console.error('Query service logging: promise rejected with reason', error); // for demo purposes only

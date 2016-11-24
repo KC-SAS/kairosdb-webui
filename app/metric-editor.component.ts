@@ -1,6 +1,7 @@
 import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
-import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
-import { QueryService } from './query.service'
+import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
+import { QueryService } from './query.service';
+import { DescriptorService } from './descriptors.service';
 import { Subject } from 'rxjs/Subject';
 import { TagEditorComponent } from './tag-editor.component';
 import * as _ from 'lodash';
@@ -8,8 +9,7 @@ import * as _ from 'lodash';
 @Component({
     selector: 'kairos-metric-editor',
     template: `
-
-<table >
+<table>
 <tr>
 	<td class="label-col">
         <span >Name </span >
@@ -37,6 +37,7 @@ import * as _ from 'lodash';
 </table>
 
 <!-- TAGS -->
+<div class="ps-section">
 <div class="category-header">
     <h5 class="category-title">Tag filters</h5> 
     <button type="button" class="btn btn-default category-add" (click)="tagListComponent.addNew()"><i class="glyphicon glyphicon-plus"></i></button>
@@ -55,16 +56,23 @@ import * as _ from 'lodash';
         >
     </kairos-tag-list>
 </div>
-
-<!-- AGGREGATORS -->
-<div class="category-header">
-    <h5 class="category-title">Aggregators</h5> 
-    <button type="button" (click)="aggregatorListComponent.addNew()" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
 </div>
-<kairos-aggregator-list #aggregatorListComponent class="category-body"
-    [parsedAggregatorObjectList]="parsedMetricObject.aggregators" 
-    (aggregatorObjectListChange)="generatedMetricObject.aggregators=$event;metricObjectChange.emit(generatedMetricObject)"
-></kairos-aggregator-list>
+
+<!-- OTHER PROCESSING STAGES (PS) -->
+<div class="ps-section" *ngFor="let descriptor of descriptorList; let idx = index" >
+    <div class="category-header">
+        <h5 class="category-title">{{descriptor.label || descriptor.name}}</h5> 
+        <button type="button" (click)="psListComponent.addNew()" class="btn btn-default category-add"><i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+    <div class="category-body">
+        <kairos-ps-list #psListComponent class="category-body"
+            [psDescriptor]="descriptor"
+            [parsedPsObjectList]="parsedMetricObject[descriptor.name]" 
+            [tagValuesForNames]="tagValuesForNames"
+            (psObjectListChange)="generatedMetricObject[descriptor.name]=$event;metricObjectChange.emit(generatedMetricObject)"
+        ></kairos-ps-list>
+    </div>
+</div>
   `,
     styles: [`
     td {
@@ -132,8 +140,12 @@ import * as _ from 'lodash';
         width: 500px;
     }
 
-    .category-body {
+    .ps-section {
         margin-bottom: 20px;
+    }
+
+    .ps-section:last-child {
+        margin-bottom: 0px;
     }
 
     .icon-refresh-animate {
@@ -167,11 +179,14 @@ export class MetricEditorComponent implements OnChanges, OnInit {
 
     public refreshingMetricNames: boolean;
 
-    public constructor(private queryService: QueryService) {
+    public descriptorList: {}[];
+
+    public constructor(private queryService: QueryService, private descriptorsService: DescriptorService) {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
         this.tagValuesForNames = {};
         this.generatedMetricObject = {};
+        this.descriptorList = [];
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -187,6 +202,9 @@ export class MetricEditorComponent implements OnChanges, OnInit {
                 resp => { this.tagValuesForNames = resp || {}; }
             )
         );
+        this.descriptorsService.getDescriptorList().then(descList => {
+            this.descriptorList = descList || [];
+        });
         this.refreshMetricNames();
     }
 
