@@ -14,7 +14,7 @@ import * as _ from 'lodash';
     (tagNameChange)="update()"
     [(selectedTagValues)]="selectedTagArray[idx].values" 
     (selectedTagValuesChange)="update()"
-    (delete)="selectedTagArray.splice(idx,1);"
+    (delete)="delete(idx)"
 ></kairos-tag-editor> 
   `,
     styles: [`
@@ -25,9 +25,6 @@ export class TagListComponent implements OnChanges, OnInit {
     public parsedSelectedTagObject: {}; // downstream
     @Output()
     public selectedTagObjectChange = new EventEmitter<{}>();
-
-    @Input()
-    public metricName: string;
 
     @Input()
     public tagValuesForNames: {};
@@ -82,6 +79,11 @@ export class TagListComponent implements OnChanges, OnInit {
         this.selectedTagObjectChange.emit(newSelectedTagObject);
         this.selectedTagArray = _.map(_.keys(newSelectedTagObject), (key) => { return { name: key, values: newSelectedTagObject[key] } });
         this.error.emit([]);
+    }
+
+    delete(idx: number){
+        this.selectedTagArray.splice(idx,1);
+        this.update();
     }
 
     private selectedTagListToObject(): {} {

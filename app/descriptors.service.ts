@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { QueryService } from './query.service';
-import { AGGREGATORS } from './mocks/mock-aggregators'
-import { GROUP_BYS } from './mocks/mock-groupbys'
+import { AGGREGATORS } from './mocks/mock-aggregators';
+import { GROUP_BYS } from './mocks/mock-groupbys';
+import { PsDescriptor } from './model/ps';
 
 let descriptorList = [{
     name: "group_by",
@@ -21,7 +22,7 @@ export class DescriptorService {
 
   constructor(private queryService: QueryService) { }
 
-  getDescriptorList(): Promise<{}[]> {
+  getDescriptorList(): Promise<PsDescriptor[]> {
       return Promise.resolve(descriptorList);
   }
 }

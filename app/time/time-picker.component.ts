@@ -3,13 +3,14 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 
 @Component({
+    moduleId: module.id,
     selector: 'kairos-timepicker',
     template: `
   <div class="input-group">
 	<span class="input-group-addon" id="time">Time</span>
     <input #timeField aria-describedby="time" [ngModel]="timeModel" class="form-control" (focus)="showPopup()" (keyup)="onTextEdit(timeField.value)" (blur)="onBlur(timeField)"/>
   </div>
-  <div class="popup" *ngIf="showDatepicker">
+  <div class="popup" *ngIf="showTimepicker">
     <label class="hourLabel">Hour:</label>
     <input #hours class="hourInput"
            (ngModelChange)="onSliderChange($event,'hour')"
@@ -28,7 +29,7 @@ import { ActivatedRoute, Params } from '@angular/router';
            type="range" min="0" max="999" step="10" [(ngModel)]="millisecond"/>
   </div>
   `,
-   styleUrls: ['app/time/time-picker.component.css']
+   styleUrls: ['time-picker.component.css']
 })
 export class TimePickerComponent implements OnChanges {
 
@@ -43,18 +44,18 @@ export class TimePickerComponent implements OnChanges {
     @Output()
     timeModelChange: EventEmitter<string> = new EventEmitter<string>();
 
-    private showDatepicker: boolean = false;
+    public showTimepicker: boolean = false;
 
     public constructor(private _eref: ElementRef) {
         document.addEventListener('click', this.offClickHandler.bind(this));
     }
 
     showPopup() {
-        this.showDatepicker = true;
+        this.showTimepicker = true;
     }
 
     hidePopup(event) {
-        this.showDatepicker = false;
+        this.showTimepicker = false;
         //this.timeModel = event;
         this.timeModelChange.emit(this.timeModel)
     }
@@ -115,7 +116,7 @@ export class TimePickerComponent implements OnChanges {
     }
 
     offClickHandler(event: any) {
-        if (!this._eref.nativeElement.contains(event.target) && this.showDatepicker) { // check click origin
+        if (!this._eref.nativeElement.contains(event.target) && this.showTimepicker) { // check click origin
             this.hidePopup(event);
         }
 

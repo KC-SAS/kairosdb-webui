@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 
 @Component({
+  moduleId: module.id,
   selector: 'my-app',
   template: `
     <ul>
@@ -14,7 +15,7 @@ import { Component } from '@angular/core';
     <div style="height:50px"></div>
     <router-outlet></router-outlet>
       `,
-  styleUrls: ['app/app.component.css']
+  styleUrls: ['app.component.css']
 })
 export class AppComponent {
 

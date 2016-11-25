@@ -1,4 +1,5 @@
 import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
+import { QueryStatus } from './model/query-status';
 import * as _ from 'lodash';
 import * as numeral from 'numeral';
 
@@ -26,7 +27,7 @@ import * as numeral from 'numeral';
 export class QueryStatusComponent implements OnChanges, OnInit {
 
     @Input()
-    public model: {};
+    public model: QueryStatus;
 
     public duration: string;
     public sampleSize: string;
@@ -41,14 +42,14 @@ export class QueryStatusComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes['model'] && this.model) {
-            if (this.model['status'] === 'success') {
+            if (this.model.status === 'success') {
                 this.duration = '';
                 this.sampleSize = '';
                 this.dataPoints = '';
                 this.duration = this.formatDuration(this.model['duration']);
                 this.computeStatistics();
             }
-            else if (this.model['status'] === 'error') {
+            else if (this.model.status === 'error') {
                 this.errorHeader = '';
                 this.errorMessage = '';
                 this.formatErrorMessage();
@@ -71,10 +72,10 @@ export class QueryStatusComponent implements OnChanges, OnInit {
     computeStatistics() {
         var dataPointCount = 0;
         var sampleSizeCount = 0;
-        if (this.model['response'] && _.isArray(this.model['response'])) {
-            this.model['response'].forEach(function (resultSet) {
-                sampleSizeCount += resultSet.sample_size;
-                resultSet.results.forEach(function (queryResult) {
+        if (this.model.response && _.isArray(this.model.response)) {
+            this.model.response.forEach(function (resultSet) {
+                sampleSizeCount += resultSet['sample_size'];
+                resultSet['results'].forEach(function (queryResult) {
                     dataPointCount += queryResult.values.length;
                 });
             });
@@ -84,19 +85,19 @@ export class QueryStatusComponent implements OnChanges, OnInit {
     }
 
     formatErrorMessage() {
-        if(!this.model['response']) {
+        if(!this.model.response) {
             this.errorMessage = 'Unkown error during query';
             return;
         }
-        if(typeof this.model['response'] === 'string' || this.model['response'] instanceof String){
-            this.errorMessage = <string> this.model;
+        if(typeof this.model.response === 'string' || this.model.response instanceof String){
+            this.errorMessage = <string> this.model.response;
         }
-        else if(this.model['response']['status']===0){
+        else if(this.model.response['status']===0){
             this.errorMessage = 'No response from server';
         }
-        else if(this.model['response']['status']>=400){
-            this.errorHeader = this.model['response']['status'] + " " +this.model['response']['statusText'];
-            this.errorMessage = this.model['response']['_body'];
+        else if(this.model.response['status']>=400){
+            this.errorHeader = this.model.response['status'] + " " +this.model.response['statusText'];
+            this.errorMessage = this.model.response['_body'];
         }
     }
 

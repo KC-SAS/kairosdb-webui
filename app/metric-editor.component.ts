@@ -4,6 +4,8 @@ import { QueryService } from './query.service';
 import { DescriptorService } from './descriptors.service';
 import { Subject } from 'rxjs/Subject';
 import { TagEditorComponent } from './tag-editor.component';
+import { Metric } from './model/metric';
+import { PsDescriptor } from './model/ps';
 import * as _ from 'lodash';
 
 @Component({
@@ -50,7 +52,6 @@ import * as _ from 'lodash';
     <kairos-tag-list #tagListComponent
         [parsedSelectedTagObject]="parsedMetricObject.tags" 
         (selectedTagObjectChange)="generatedMetricObject.tags=$event;metricObjectChange.emit(generatedMetricObject)"
-        [metricName]="metricName"
         [tagValuesForNames]="tagValuesForNames"
         (error)="duplicatedTagNames=$event"
         >
@@ -164,12 +165,12 @@ import * as _ from 'lodash';
 export class MetricEditorComponent implements OnChanges, OnInit {
 
     @Input()
-    public parsedMetricObject: {};
+    public parsedMetricObject: Metric;
 
-    public generatedMetricObject: {};
+    public generatedMetricObject: Metric;
 
     @Output()
-    public metricObjectChange = new EventEmitter<any>();
+    public metricObjectChange = new EventEmitter<Metric>();
 
     public metricNames: string[];
 
@@ -179,13 +180,15 @@ export class MetricEditorComponent implements OnChanges, OnInit {
 
     public refreshingMetricNames: boolean;
 
-    public descriptorList: {}[];
+    public descriptorList: PsDescriptor[];
+
+    public duplicatedTagNames: string[];
 
     public constructor(private queryService: QueryService, private descriptorsService: DescriptorService) {
         // initialize empty arrays for typeahead component
         this.metricNames = [];
         this.tagValuesForNames = {};
-        this.generatedMetricObject = {};
+        this.generatedMetricObject = new Metric();
         this.descriptorList = [];
     }
 
@@ -211,11 +214,11 @@ export class MetricEditorComponent implements OnChanges, OnInit {
     refreshMetricNames() {
         this.refreshingMetricNames = true;
         this.queryService.getMetricNames().then(resp => { this.refreshingMetricNames = false; this.metricNames = resp; });
-        this.metricNameSubject.next(this.generatedMetricObject['name']);
+        this.metricNameSubject.next(this.generatedMetricObject.name);
     }
 
     onMetricNameUpdate() {
-        this.metricNameSubject.next(this.generatedMetricObject['name']);
+        this.metricNameSubject.next(this.generatedMetricObject.name);
     }
 
 }

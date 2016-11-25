@@ -1,11 +1,70 @@
 import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
-import { Subject } from 'rxjs/Subject';
+import { PsViewProperty } from './model/ps';
 import * as _ from 'lodash';
 import * as validation from './utils/validation'
 
 // PS stands for Processing Stage
+
+const customCheckboxStyle = `
+.checkbox label:after, 
+.radio label:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.checkbox .cr,
+.radio .cr {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    border-radius: .25em;
+    width: 1.3em;
+    height: 1.3em;
+    float: left;
+    margin-right: .5em;
+}
+
+.radio .cr {
+    border-radius: 50%;
+}
+
+.checkbox .cr .cr-icon,
+.radio .cr .cr-icon {
+    position: absolute;
+    font-size: .8em;
+    line-height: 0;
+    top: 50%;
+    left: 20%;
+}
+
+.radio .cr .cr-icon {
+    margin-left: 0.04em;
+}
+
+.checkbox label input[type="checkbox"],
+.radio label input[type="radio"] {
+    display: none;
+}
+
+.checkbox label input[type="checkbox"] + .cr > .cr-icon,
+.radio label input[type="radio"] + .cr > .cr-icon {
+    opacity: 0;
+    transition: all .1s ease-in;
+}
+
+.checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+.radio label input[type="radio"]:checked + .cr > .cr-icon {
+    opacity: 1;
+}
+
+.checkbox label input[type="checkbox"]:disabled + .cr,
+.radio label input[type="radio"]:disabled + .cr {
+    opacity: .5;
+}
+`;
 
 @Component({
     selector: 'kairos-ps-field',
@@ -106,17 +165,21 @@ import * as validation from './utils/validation'
         margin: 0px;
     }
 
+    .checkbox label {
+        padding: 0px;
+    }
+
     .fieldValidation {
         font-size: x-small;
         color: red;
         margin-bottom: -5px;
     }
-  `],
-    styleUrls: ['css/custom-checkbox.css']
+  `,
+  customCheckboxStyle]
 })
 export class PsFieldComponent implements OnChanges, OnInit {
     @Input()
-    public psProperty: {};
+    public psProperty: PsViewProperty;
 
     public fieldValue: any;
     public valueArray: any[];
@@ -129,7 +192,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
     public tagValuesForNames: {};
 
     public constructor() {
-        this.psProperty = {};
+        this.psProperty = new PsViewProperty();
         this.valueArray = [];
     }
 
@@ -140,7 +203,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
         }
         if (changes['psProperty'] || changes['tagValuesForNames']) {
             console.log('ngOnChanges');
-            if (this.psProperty['autocomplete'] === 'tag_name') {
+            if (this.psProperty.autocomplete === 'tag_name') {
                 console.log(_.keys(this.tagValuesForNames));
                 this.suggestions = _.keys(this.tagValuesForNames);
             }
@@ -155,16 +218,16 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     onPropertyInputChange() {
         this.validate();
-        if (this.psProperty['property_type'] !== 'array') {
-            this.psProperty['value'] = this.fieldValue;
+        if (this.psProperty.property_type !== 'array') {
+            this.psProperty.value = this.fieldValue;
             this.change.emit();
         }
     }
 
     onEnter() {
-        if (this.psProperty['property_type'] === 'array') {
+        if (this.psProperty.property_type === 'array') {
             this.valueArray.push(this.fieldValue);
-            this.psProperty['value'] = this.valueArray;
+            this.psProperty.value = this.valueArray;
             this.change.emit();
             this.fieldValue = '';
         }
@@ -172,7 +235,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     removeSelectedTag(idx: number) {
         _.pullAt(this.valueArray, idx);
-        this.psProperty['value'] = this.valueArray;
+        this.psProperty.value = this.valueArray;
         this.change.emit();
     }
 
@@ -188,44 +251,44 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     validate() {
-        let type = this.psProperty['property_type'];
+        let type = this.psProperty.property_type;
         if (type === 'array') {
-            type = this.psProperty['element_type'];
+            type = this.psProperty.element_type;
         }
         if (type == 'integer' && !validation.isInteger(this.fieldValue)) {
-            this.psProperty['error'] = 'Invalid integer';
+            this.psProperty.error = 'Invalid integer';
         }
         else if (type == 'long' && !validation.isLong(this.fieldValue)) {
-            this.psProperty['error'] = 'Invalid long';
+            this.psProperty.error = 'Invalid long';
         }
         else if (type == 'double' && !validation.isDouble(this.fieldValue)) {
-            this.psProperty['error'] = 'Invalid double';
+            this.psProperty.error = 'Invalid double';
         }
         else {
-            this.psProperty['error'] = undefined;
+            this.psProperty.error = undefined;
         }
         // TODO use validation field
     }
 
-    checkBasicTypes(prop: {}, ...types: string[]): boolean {
+    checkBasicTypes(prop: PsViewProperty, ...types: string[]): boolean {
         if (!prop || !types) {
             return false;
         }
         let result = false;
         types.forEach(type => {
-            result = result || type === prop['property_type'] || type === prop['element_type'];
+            result = result || type === prop.property_type || type === prop.element_type;
         });
         return result;
     }
 
-    checkText(prop: {}, type?: string): boolean {
-        if (!prop || ('string' !== prop['property_type'] && 'string' !== prop['element_type'])) {
+    checkText(prop: PsViewProperty, type?: string): boolean {
+        if (!prop || ('string' !== prop.property_type && 'string' !== prop.element_type)) {
             return false;
         }
-        else if (prop['multiline'] === true) {
+        else if (prop.multiline === true) {
             return type === 'multiline';
         }
-        else if (prop['autocomplete'] !== undefined) {
+        else if (prop.autocomplete !== undefined) {
             return type === 'typeahead';
         }
         else {

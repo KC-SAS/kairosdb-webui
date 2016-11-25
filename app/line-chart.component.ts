@@ -38,7 +38,7 @@ export class LineChartComponent implements OnChanges {
   @Input()
   public queryResult: {}[];
 
-  private hideResetZoom: boolean;
+  public hideResetZoom: boolean;
 
 
   public constructor(private rootNode: ElementRef) {

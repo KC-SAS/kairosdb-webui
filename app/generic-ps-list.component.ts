@@ -3,7 +3,7 @@ import { PsEditorComponent } from './generic-ps-editor.component'
 
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
-import { Subject } from 'rxjs/Subject';
+import { PsProperty, PsDescriptor } from './model/ps';
 import * as _ from 'lodash';
 
 // PS stands for Processing Stage
@@ -33,7 +33,7 @@ import * as _ from 'lodash';
 <td *ngFor="let psObject of workingPsObjectList; let idx = index" [class.no-display]="idx!==selectedPsIndex" class="ps-display-area">
     <kairos-ps-editor 
         [psDescriptor]="psDescriptor" 
-        [psObject]="workingPsObjectList[idx]"
+        [psObject]="psObject"
         [tagValuesForNames]="tagValuesForNames"
         (psObjectChange)="onPsEdit(idx,$event)"
     ></kairos-ps-editor>
@@ -97,20 +97,20 @@ import * as _ from 'lodash';
 })
 export class PsListComponent implements OnChanges, OnInit {
     @Input()
-    public parsedPsObjectList: {}[];
+    public parsedPsObjectList: PsProperty[];
 
-    public workingPsObjectList: {}[];
+    public workingPsObjectList: PsProperty[];
 
-    public generatedPsObjectList: {}[];
+    public generatedPsObjectList: PsProperty[];
 
 
     @Output()
-    public psObjectListChange = new EventEmitter<{}[]>();
+    public psObjectListChange = new EventEmitter<PsProperty[]>();
 
-    private selectedPsIndex: number;
+    public selectedPsIndex: number;
 
     @Input()
-    public psDescriptor: {};
+    public psDescriptor: PsDescriptor;
 
     @Input()
     public tagValuesForNames: {};
@@ -125,8 +125,8 @@ export class PsListComponent implements OnChanges, OnInit {
         // if(changes['psDescriptor']){}
         if (changes['parsedPsObjectList']) {
             this.selectedPsIndex = undefined;
-            this.workingPsObjectList = _.map(this.parsedPsObjectList, _.identity) || [];
-            this.generatedPsObjectList = _.map(this.parsedPsObjectList, _.identity) || [];
+            this.workingPsObjectList = _.map<PsProperty,PsProperty>(this.parsedPsObjectList, property => property) || [];
+            this.generatedPsObjectList = _.map<PsProperty,PsProperty>(this.parsedPsObjectList, property => property) || [];
         }
     }
 
@@ -134,9 +134,9 @@ export class PsListComponent implements OnChanges, OnInit {
     }
 
     addNew() {
-        let defaultPsName = _.get(this.psDescriptor,'properties[0].name');
-        this.workingPsObjectList.push({ name: defaultPsName });
-        this.generatedPsObjectList.push({ name: defaultPsName });
+        let defaultPsName: string = _.get<string>(this.psDescriptor,'properties[0].name');
+        this.workingPsObjectList.push(new PsProperty(defaultPsName));
+        this.generatedPsObjectList.push(new PsProperty(defaultPsName));
         this.psObjectListChange.emit(this.generatedPsObjectList);
         this.selectedPsIndex = this.workingPsObjectList.length - 1;
     }
@@ -164,7 +164,7 @@ export class PsListComponent implements OnChanges, OnInit {
 
     onPsNameChange(idx, name) {
         let newPsObject = _.cloneDeep(this.generatedPsObjectList[idx]);
-        newPsObject['name'] = name;
+        newPsObject.name = name;
         this.psEditorComponents.toArray()[idx].psChanged(newPsObject);
         this.psEditorComponents.toArray()[idx].updatePsObject();
         this.psObjectListChange.emit(this.generatedPsObjectList);

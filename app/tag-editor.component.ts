@@ -197,6 +197,7 @@ export class TagEditorComponent implements OnChanges, OnInit {
     public tagNames: string[];
     public unselectedTagValues: string[];
     public refreshingMetricNames: boolean;
+    public tagValue: string;
 
     public constructor(private queryService: QueryService) {
         // initialize empty arrays for typeahead component
@@ -224,8 +225,8 @@ export class TagEditorComponent implements OnChanges, OnInit {
         this.selectedTagValues.splice(index, 1);
         if (this.tagValuesForNames
             && this.tagValuesForNames[this.tagName]
-            && this.tagValuesForNames[this.tagName].includes(item)
-            && !this.unselectedTagValues.includes(item)) {
+            && _.includes(this.tagValuesForNames[this.tagName],item)
+            && !_.includes(this.unselectedTagValues,item)) {
             this.unselectedTagValues.push(item);
         }
         this.selectedTagValuesChange.emit(this.selectedTagValues);

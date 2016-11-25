@@ -75,6 +75,8 @@ export class TypeaheadComponent {
     @Input()
     public typeaheadLatinize: boolean = true;
     @Input()
+    public typeaheadWordDelimiters: string = ' ';
+    @Input()
     public typeaheadSingleWords: boolean = true;
     @Input()
     public typeaheadPhraseDelimiters: string = '\'"';

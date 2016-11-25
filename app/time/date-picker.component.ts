@@ -42,7 +42,7 @@ export class DatePickerComponent implements OnInit{
     @Output()
     dateModelChange: EventEmitter<string> = new EventEmitter<string>();
     
-    private showDatepicker: boolean = false;
+    public showDatepicker: boolean = false;
 
     public constructor(private _eref: ElementRef) {
         document.addEventListener('click', this.offClickHandler.bind(this));

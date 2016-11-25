@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryService } from './query.service';
+import { QueryStatus } from './model/query-status';
+import { Query } from './model/query';
 import * as _ from 'lodash';
 
 @Component({
@@ -81,12 +83,12 @@ import * as _ from 'lodash';
 export class QueryComponent implements OnInit{
 
     public queryResult: {}[];
-    public statusModel: {};
+    public statusModel: QueryStatus;
 
     public jsonEditorDisabled: boolean;
 
-    public generatedQuery: {};
-    public parsedQuery: {};
+    public generatedQuery: Query;
+    public parsedQuery: Query;
     public displayedQuery: string;
 
     public invalidJson: boolean;
@@ -129,7 +131,9 @@ export class QueryComponent implements OnInit{
         this.queryResult = undefined;
         let startTime = new Date();
         this.statusModel = {
-            status: 'progress'
+            status: 'progress',
+            response: undefined,
+            duration: undefined,
         };
         this.queryService.executeQuery(this.displayedQuery).then(
             (results) => {
@@ -145,6 +149,7 @@ export class QueryComponent implements OnInit{
                 console.log("query failure in query.component");
                 this.statusModel = {
                     status: 'error',
+                    duration: new Date().getTime() - startTime.getTime(),
                     response: error
                 }
             });

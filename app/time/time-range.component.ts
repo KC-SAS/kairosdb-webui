@@ -1,10 +1,12 @@
 import { Component, OnChanges, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
 import * as moment from 'moment-timezone';
-import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
+import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
+import * as _ from 'lodash';
 
 @Component({
+  moduleId: module.id,
   selector: 'kairos-timerange',
-  templateUrl: 'app/time/time-range.component.html',
+  templateUrl: 'time-range.component.html',
   styles: [`
   td {
     padding-top: 5px;
@@ -158,7 +160,7 @@ export class TimeRangeComponent implements OnChanges {
   }
 
   onTimezoneBlur(element: HTMLInputElement) {
-    this.timezone = this.items.includes(element.value) ? element.value : '';
+    this.timezone = _.includes(this.items,element.value) ? element.value : '';
     element.value = this.timezone;
     this.timezoneChange.emit(this.timezone);
   }
