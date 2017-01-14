@@ -1,7 +1,6 @@
 import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
 import { QueryStatus } from './model/query-status';
-import * as _ from 'lodash';
-import * as numeral from 'numeral';
+import { _, numeral } from './utils/imports';
 
 @Component({
     selector: 'kairos-query-status',

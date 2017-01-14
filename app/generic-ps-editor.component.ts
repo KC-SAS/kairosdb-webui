@@ -2,8 +2,8 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
-import { PsProperty, PsViewProperty, PsDescribedProperty, PsDescriptor } from './model/ps';
-import * as _ from 'lodash';
+import { PsProperty, PsViewProperty, PsDescribedProperty, PsDescriptor, toViewProperty } from './model/ps';
+import { _ } from './utils/imports';
 import * as validation from './utils/validation';
 
 // PS stands for Processing Stage
@@ -136,10 +136,10 @@ export class PsEditorComponent implements OnChanges, OnInit {
         let newPsProperties = new Array<PsViewProperty>();
         if (this.currentPsDescription && this.currentPsDescription.properties) {
             this.currentPsDescription.properties.forEach((propertyDescribed) => {
-                let property:PsViewProperty = propertyDescribed.toViewProperty();
+                let property:PsViewProperty = toViewProperty(propertyDescribed);
                 if (property.property_type === 'object') {
                     propertyDescribed.properties.forEach((subPropertyDescribed) => {
-                        let subProperty: PsViewProperty = subPropertyDescribed.toViewProperty();
+                        let subProperty: PsViewProperty = toViewProperty(subPropertyDescribed);
                         subProperty.parent_name = property.name;
                         let currentVal = _.get(psObject, subProperty.name);
                         subProperty.active = currentVal !== undefined || !subProperty.optional;

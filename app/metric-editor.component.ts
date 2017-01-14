@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { TagEditorComponent } from './tag-editor.component';
 import { Metric } from './model/metric';
 import { PsDescriptor } from './model/ps';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 @Component({
     selector: 'kairos-metric-editor',

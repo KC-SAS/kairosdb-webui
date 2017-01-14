@@ -1,6 +1,6 @@
 import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter, QueryList, ViewChildren } from '@angular/core';
 import { QueryService } from './query.service';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 @Component({
     selector: 'kairos-metric-list',

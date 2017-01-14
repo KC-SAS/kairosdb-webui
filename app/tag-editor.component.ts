@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 // TODO: clean because copied from the ng2-select style
 let labelStyles = `

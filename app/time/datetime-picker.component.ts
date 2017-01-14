@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChange} from '@angular/core';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 @Component({
     selector: 'kairos-datetimepicker',

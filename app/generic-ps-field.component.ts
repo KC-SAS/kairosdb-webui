@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { PsViewProperty } from './model/ps';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 import * as validation from './utils/validation'
 
 // PS stands for Processing Stage

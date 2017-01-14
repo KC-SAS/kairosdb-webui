@@ -3,7 +3,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { Subject } from 'rxjs/Subject';
 import { TagEditorComponent } from './tag-editor.component';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 @Component({
     selector: 'kairos-tag-list',

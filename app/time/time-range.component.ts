@@ -1,7 +1,6 @@
 import { Component, OnChanges, Input, Output, SimpleChange, EventEmitter } from '@angular/core';
-import * as moment from 'moment-timezone';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
-import * as _ from 'lodash';
+import { moment, _ } from '../utils/imports';
 
 @Component({
   moduleId: module.id,

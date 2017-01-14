@@ -1,5 +1,5 @@
 import {Component, Input, Output, ElementRef, EventEmitter, OnInit} from '@angular/core';
-import * as moment from 'moment';
+import { moment } from '../utils/imports';
 
 @Component({
     selector: 'kairos-datepicker',

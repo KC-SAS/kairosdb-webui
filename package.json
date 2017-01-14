@@ -9,7 +9,8 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
-    "build:aot": "ngc -p tsconfig-aot.json && rollup -c rollup-config.js"
+    "build:aot": "ngc -p tsconfig-aot.json && rollup -c rollup-config.js",
+    "lite:aot": "lite-server -c aot/bs-config.json"
   },
   "license": "ISC",
   "dependencies": {
@@ -29,7 +30,7 @@
     "core-js": "^2.4.1",
     "jquery": "^3.1.1",
     "lodash": "^4.17.2",
-    "moment-timezone": "^0.5.9",
+    "moment-timezone": "^0.5.11",
     "ng2-bootstrap": "1.1.16",
     "numeral": "^1.5.6",
     "reflect-metadata": "^0.1.8",
@@ -62,10 +63,11 @@
     "rimraf": "^2.5.4",
     "rollup": "^0.36.4",
     "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-json": "^2.0.2",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-uglify": "^1.0.1",
     "tslint": "^3.15.1",
-    "typescript": "^2.0.3",
+    "typescript": "^2.1.4",
     "webdriver-manager": "10.2.5"
   }
 }

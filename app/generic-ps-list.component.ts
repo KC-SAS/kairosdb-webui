@@ -4,7 +4,7 @@ import { PsEditorComponent } from './generic-ps-editor.component'
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from './query.service'
 import { PsProperty, PsDescriptor } from './model/ps';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 // PS stands for Processing Stage
 

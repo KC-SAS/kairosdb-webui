@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { QueryService } from './query.service';
 import { QueryStatus } from './model/query-status';
 import { Query } from './model/query';
-import * as _ from 'lodash';
+import { _ } from './utils/imports';
 
 @Component({
     selector: 'query-builder',

@@ -1,13 +1,6 @@
 import { Component, ElementRef, OnChanges, Input, SimpleChange } from '@angular/core';
-import * as numeral from 'numeral';
-import * as _ from 'lodash';
-import 'jquery';
-import * as moment from 'moment';
-import 'flot';
-import 'flot-resize';
-import 'flot-time';
-import 'flot-selection';
-
+import { _, numeral } from './utils/imports';
+import moment from 'moment';
 
 @Component({
   selector: 'kairos-linechart',

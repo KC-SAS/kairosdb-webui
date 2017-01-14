@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { _ } from '../utils/imports';
 
 // ps stands for Processing Stage
 
@@ -25,22 +25,6 @@ abstract class AbstractPsProperty extends PsProperty {
 
 export class PsDescribedProperty extends AbstractPsProperty {
     properties: PsDescribedProperty[];
-
-    toViewProperty(): PsViewProperty {
-        let viewProperty = new PsViewProperty(this.name);
-        viewProperty.label = this.label;
-        viewProperty.optional = this.optional;
-        viewProperty.property_type = this.property_type;
-        viewProperty.element_type = this.element_type;
-        viewProperty.validations = _.cloneDeep(this.validations); 
-        viewProperty.default = this.default;
-        viewProperty.description = this.description;
-        viewProperty.options = _.cloneDeep(this.options); 
-        viewProperty.autocomplete = this.autocomplete;
-        viewProperty.multiline = this.multiline;
-        return viewProperty;
-
-    }
 }
 
 export class PsViewProperty extends AbstractPsProperty {
@@ -56,4 +40,19 @@ export class PsDescriptor {
     name: string;
     description: string;
     label: string;
+}
+
+export function toViewProperty(psDescribedProperty: PsDescribedProperty): PsViewProperty {
+    let viewProperty = new PsViewProperty(psDescribedProperty.name);
+    viewProperty.label = psDescribedProperty.label;
+    viewProperty.optional = psDescribedProperty.optional;
+    viewProperty.property_type = psDescribedProperty.property_type;
+    viewProperty.element_type = psDescribedProperty.element_type;
+    viewProperty.validations = _.cloneDeep(psDescribedProperty.validations);
+    viewProperty.default = psDescribedProperty.default;
+    viewProperty.description = psDescribedProperty.description;
+    viewProperty.options = _.cloneDeep(psDescribedProperty.options);
+    viewProperty.autocomplete = psDescribedProperty.autocomplete;
+    viewProperty.multiline = psDescribedProperty.multiline;
+    return viewProperty;
 }
