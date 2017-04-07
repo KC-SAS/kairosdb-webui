@@ -31,7 +31,7 @@ import { moment, _ } from '../utils/imports';
   .select-col {
     width: 170px;
   }
-  
+
   span {
     display: block;
     text-align: left;
@@ -42,6 +42,7 @@ import { moment, _ } from '../utils/imports';
   }
   `]
 })
+
 export class TimeRangeComponent implements OnChanges {
   public timeStartRadioModel: string = 'Absolute';
   public timeEndRadioModel: string = 'None';
@@ -165,4 +166,3 @@ export class TimeRangeComponent implements OnChanges {
   }
 
 }
-

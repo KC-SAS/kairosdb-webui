@@ -1,31 +1,14 @@
-import mom from 'moment-timezone';
-import lod from 'lodash';
-import num from 'numeral';
+import _moment_tz_ from 'moment-timezone';
+import _lodash_ from 'lodash';
+import _numeral_ from 'numeral';
 
-let moment : typeof mom;
-if(mom===undefined) {
-    moment = require('moment-timezone');
-} 
-else {
-    moment = mom;
-}
+let moment: typeof _moment_tz_;
+moment = (_moment_tz_ === undefined) ? require('moment-timezone') : _moment_tz_;
 
-let _ : typeof lod;
-if(lod===undefined) {
-    _ = require('lodash');
-} 
-else {
-    _ = lod;
-}
+let _: typeof _lodash_;
+_ = (_lodash_ === undefined) ? require('lodash') : _lodash_;
 
-let numeral : typeof num;
-if(num===undefined) {
-    numeral = require('numeral');
-} 
-else {
-    numeral = num;
-}
+let numeral: typeof _numeral_;
+numeral = (_numeral_ === undefined) ? require('numeral') : _numeral_;
 
 export { moment, _, numeral };
-
-
