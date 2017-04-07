@@ -25,7 +25,7 @@
             'rxjs': 'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
             'moment': 'npm:moment/moment.js',
-            'moment-timezone': 'npm:moment-timezone/builds/moment-timezone.min.js',
+            'moment-timezone': 'npm:moment-timezone/builds/moment-timezone-with-data-2012-2022.min.js',
             'lodash': 'npm:lodash/lodash.js',
             'ng2-bootstrap/ng2-bootstrap': 'npm:ng2-bootstrap/bundles/ng2-bootstrap.umd.js',
             'numeral': 'npm:numeral/min/numeral.min.js'

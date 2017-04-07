@@ -10,7 +10,7 @@ export class PsProperty {
     }
 }
 
-abstract class AbstractPsProperty extends PsProperty {
+export abstract class AbstractPsProperty extends PsProperty {
     label: string;
     optional: boolean;
     property_type: string;
