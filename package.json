@@ -7,10 +7,7 @@
     "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
     "lite": "lite-server",
     "tsc": "tsc",
-    "tsc:w": "tsc -w",
-    "test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
-    "build:aot": "ngc -p tsconfig-aot.json && rollup -c rollup-config.js",
-    "lite:aot": "lite-server -c aot/bs-config.json"
+    "tsc:w": "tsc -w"
   },
   "license": "ISC",
   "dependencies": {
@@ -40,34 +37,15 @@
   },
   "devDependencies": {
     "@types/flot": "0.0.28",
-    "@types/jasmine": "^2.5.36",
     "@types/jquery": "^2.0.34",
     "@types/lodash": "4.14.62",
     "@types/moment-timezone": "^0.2.32",
     "@types/node": "^6.0.45",
     "@types/numeral": "0.0.18",
-    "@types/selenium-webdriver": "^2.53.33",
-    "canonical-path": "0.0.2",
     "concurrently": "^3.4.0",
-    "http-server": "^0.9.0",
-    "jasmine-core": "~2.5.2",
-    "jspm": "^0.16.53",
-    "karma": "^1.6.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-cli": "^1.0.1",
-    "karma-htmlfile-reporter": "^0.3.5",
-    "karma-jasmine": "^1.1.0",
-    "karma-jasmine-html-reporter": "^0.2.2",
     "lite-server": "^2.3.0",
     "protractor": "^5.1.1",
-    "rimraf": "^2.6.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-json": "^2.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^1.0.1",
     "tslint": "^5.0.0",
-    "typescript": "^2.2.2",
-    "webdriver-manager": "~12.0.4"
+    "typescript": "^2.2.2"
   }
 }
