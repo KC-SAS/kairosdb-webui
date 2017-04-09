@@ -42,7 +42,7 @@
     "@types/flot": "0.0.28",
     "@types/jasmine": "^2.5.36",
     "@types/jquery": "^2.0.34",
-    "@types/lodash": "^4.14.38",
+    "@types/lodash": "4.14.62",
     "@types/moment-timezone": "^0.2.32",
     "@types/node": "^6.0.45",
     "@types/numeral": "0.0.18",
