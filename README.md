@@ -1,4 +1,4 @@
-# ![KairosDB](kairosdb_light.png) WebUI
+# ![KairosDB](resources/images/kairosdb_light.png) WebUI
 
 This is an Angular 2 rewrite of the KairosDB query building interface.
 

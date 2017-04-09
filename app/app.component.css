@@ -35,7 +35,7 @@ ul {
     padding: 0;
     overflow: hidden;
     background-color: #333;
-    z-index: 1000;
+    z-index: 10000;
 }
 
 li {
