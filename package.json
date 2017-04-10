@@ -7,7 +7,9 @@
     "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
     "lite": "lite-server",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "build": "ngc -p tsconfig.json",
+    "build:aot": "ngc -p tsconfig-aot.json && rollup -c rollup-config.js"
   },
   "license": "ISC",
   "dependencies": {
