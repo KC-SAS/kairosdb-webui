@@ -24,12 +24,12 @@ import { AlertModule, ButtonsModule, TypeaheadModule, TooltipModule } from 'ng2-
 import { TimeRangeModule } from './time/time-range.module';
 
 @NgModule({
-  imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule, 
-                  TimeRangeModule, AlertModule, ButtonsModule, TypeaheadModule, TooltipModule, SharedModule ],
-  declarations: [ 
-    AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent, 
+  imports:      [ BrowserModule, FormsModule, HttpModule, /*InMemoryWebApiModule.forRoot(InMemoryDataService),*/ AppRoutingModule,
+                  TimeRangeModule, AlertModule.forRoot(), ButtonsModule.forRoot(), TypeaheadModule.forRoot(), TooltipModule.forRoot(), SharedModule ],
+  declarations: [
+    AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent,
     TagEditorComponent, TagListComponent, PsListComponent, PsEditorComponent, PsFieldComponent,
-    LineChartComponent, QueryStatusComponent 
+    LineChartComponent, QueryStatusComponent
   ],
   bootstrap:    [ AppComponent ],
   providers:    [ QueryService, DescriptorService ]
