@@ -5,7 +5,7 @@ import uglify      from 'rollup-plugin-uglify'
 
 export default {
     entry: 'app/main-aot.js',
-    dest: 'oat/builds/kairos-webui.js', // output a single application bundle
+    dest: 'aot/builds/kairos-webui.js', // output a single application bundle
     sourceMap: true,
     format: 'iife',
     onwarn: function(warning) {
