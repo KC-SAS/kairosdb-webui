@@ -1,0 +1,31 @@
+<html>
+
+<head>
+    <base href="/">
+    <title>KairosDB WebUI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="resources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/css/font-awesome.min.css">
+    <!-- 1. Load libraries -->
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <!-- Graph legacy dependencies -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="flot/jquery.flot.min.js"></script>
+    <script src="flot/jquery.flot.resize.js"></script>
+    <script src="flot/jquery.flot.selection.js"></script>
+    <script src="flot/jquery.flot.time.js"></script>
+    <!-- 2. Add AOT library -->
+    <script src="aot/builds/kairos-webui.js"></script>
+</head>
+<!-- 3. Display the application -->
+
+<body>
+    <my-app>Loading...</my-app>
+</body>
+
+</html>
