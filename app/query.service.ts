@@ -24,7 +24,7 @@ export class QueryService {
     return Promise.resolve(generator.metricnames(10000));
   }
   */
-  
+
   getTagNameValues(metricName: string): Promise<any> {
     return this.http.post(this.tagsUrl, JSON.stringify({ cache_time: 0, start_absolute: 0, metrics: [{ tags: {}, name: metricName }] }), { headers: this.headers })
       .toPromise()

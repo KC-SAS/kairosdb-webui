@@ -1,0 +1,62 @@
+
+<!-- property fields -->
+<input *ngIf="checkText(psProperty)" style="width:100%;" class="form-control"
+[(ngModel)]="fieldValue"
+(ngModelChange)="onPropertyInputChange()"
+(keyup.enter)="onEnter()" />
+<textarea *ngIf="checkText(psProperty,'multiline')" style="width:100%;resize:vertical;" class="form-control"
+[(ngModel)]="fieldValue"
+(ngModelChange)="onPropertyInputChange()"
+(keyup.enter)="onEnter()"></textarea>
+<kairos-typeahead *ngIf="checkText(psProperty,'typeahead')" class="ui-select-search"
+[(value)]="fieldValue"
+(valueChange)="onPropertyInputChange()"
+[typeaheadSource]="suggestions"
+[typeaheadOptionsLimit]="100"
+[typeaheadMinLength]="0"
+(typeaheadOnSelect)="onEnter();"
+></kairos-typeahead>
+<select *ngIf="checkBasicTypes(psProperty,'enum')" style="width:inherit;" class="form-control"
+[(ngModel)]="fieldValue"
+(ngModelChange)="onPropertyInputChange()"
+(keyup.enter)="onEnter()">
+<option *ngFor="let psPropertyOption of psProperty.options;" [value]="psPropertyOption">
+    {{psPropertyOption}}
+</option>
+</select>
+<input *ngIf="checkBasicTypes(psProperty,'integer')" style="width:100px;" class="form-control"
+[(ngModel)]="fieldValue"
+(ngModelChange)="onPropertyInputChange()"
+(keyup.enter)="onEnter()"/>
+<input *ngIf="checkBasicTypes(psProperty,'long','double')" style="width:200px;" class="form-control"
+[(ngModel)]="fieldValue"
+(ngModelChange)="onPropertyInputChange()"
+(keyup.enter)="onEnter()"/>
+<div *ngIf="checkBasicTypes(psProperty,'boolean')" class="checkbox">
+    <label style="font-size: 1.0em">
+        <input type="checkbox" value="" [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()">
+        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+    </label>
+</div>
+
+<!-- validation text -->
+<div class="fieldValidation" *ngIf="psProperty.error">{{psProperty.error}}</div>
+
+<!-- array field -->
+<div *ngIf="'array'===psProperty.property_type" class="well ui-select-container ui-select-multiple">
+    <span *ngIf="valueArray?.length===0">Array empty,</span>
+    <span class="ui-select-match">
+        <span *ngFor="let a of valueArray;let idx = index">
+            <span class="ui-select-match-item btn btn-default btn-secondary btn-xs"
+            tabindex="-1"
+            type="button"
+            [ngClass]="{'btn-default': true}">
+            <a class="close"
+            style="margin-left: 5px; padding: 0;"
+            (click)="removeSelectedTag(idx)">&times;</a>
+            <span>{{a}}</span>
+        </span>
+    </span>
+</span>
+press enter to add the value...
+</div>

@@ -1,6 +1,6 @@
     import { NgModule }             from '@angular/core';
     import { RouterModule, Routes } from '@angular/router';
-    import { QueryComponent }  from './query.component';
+    import { QueryComponent }  from './components/query/query.component';
 
     const routes: Routes = [
       { path: '', redirectTo: '/query', pathMatch: 'full' },
