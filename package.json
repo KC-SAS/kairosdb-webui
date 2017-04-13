@@ -8,10 +8,7 @@
     "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "build": "ngc -p tsconfig.json",
-    "build:aot": "ngc -p tsconfig-aot.json",
-    "rollup": "rollup -c rollup-config.js",
-    "oat": "npm run build:aot && npm run rollup"
+    "build": "ngc -p tsconfig.json"
   },
   "license": "ISC",
   "dependencies": {
@@ -49,11 +46,6 @@
     "concurrently": "^3.4.0",
     "lite-server": "^2.3.0",
     "protractor": "^5.1.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-json": "^2.1.1",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^1.0.1",
     "tslint": "^5.0.0",
     "typescript": "^2.2.2"
   }
