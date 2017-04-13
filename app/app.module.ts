@@ -25,14 +25,14 @@ import { TagEditorComponent } from './components/tag/tag-editor.component';
 import { TagListComponent } from './components/tag/tag-list.component';
 
 @NgModule({
-  imports:      [ BrowserModule, FormsModule, HttpModule, AppRoutingModule,
-                  TimeRangeModule, AlertModule.forRoot(), ButtonsModule.forRoot(), TypeaheadModule.forRoot(), TooltipModule.forRoot(), SharedModule ],
-  declarations: [
-    AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent,
-    TagEditorComponent, TagListComponent, PsListComponent, PsEditorComponent, PsFieldComponent,
-    LineChartComponent, QueryStatusComponent
-  ],
-  bootstrap:    [ AppComponent ],
-  providers:    [ QueryService, DescriptorService ]
-})
-export class AppModule { }
+    imports:      [ BrowserModule, FormsModule, HttpModule, AppRoutingModule,
+        TimeRangeModule, AlertModule.forRoot(), ButtonsModule.forRoot(), TypeaheadModule.forRoot(), TooltipModule.forRoot(), SharedModule ],
+        declarations: [
+            AppComponent, QueryComponent, MetricEditorComponent, MetricListComponent,
+            TagEditorComponent, TagListComponent, PsListComponent, PsEditorComponent, PsFieldComponent,
+            LineChartComponent, QueryStatusComponent
+        ],
+        bootstrap:    [ AppComponent ],
+        providers:    [ QueryService, DescriptorService ]
+    })
+    export class AppModule { }

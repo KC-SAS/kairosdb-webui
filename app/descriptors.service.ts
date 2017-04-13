@@ -20,9 +20,9 @@ let descriptorList = [{
 @Injectable()
 export class DescriptorService {
 
-  constructor(private queryService: QueryService) { }
+    constructor(private queryService: QueryService) { }
 
-  getDescriptorList(): Promise<PsDescriptor[]> {
-      return Promise.resolve(descriptorList);
-  }
+    getDescriptorList(): Promise<PsDescriptor[]> {
+        return Promise.resolve(descriptorList);
+    }
 }
