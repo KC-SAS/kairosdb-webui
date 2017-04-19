@@ -3,7 +3,7 @@
         {{currentPsDescription?.label || currentPsDescription?.name || 'Invalid'}} {{psDescriptor?.label || ''}}
         <i *ngIf="currentPsDescription?.description" class="glyphicon glyphicon-info-sign" (click)="showPsInfo=true"></i>
     </div>
-    <alert *ngIf="showPsInfo && currentPsDescription?.description" class="ps-info-box" [type]="'info'" dismissible="true" (close)="showPsInfo=false">
+    <alert *ngIf="showPsInfo && currentPsDescription?.description" class="ps-info-box" [type]="'info'" dismissible="true" (onClose)="showPsInfo=false">
         <b>General description: </b> {{currentPsDescription?.description}}
     </alert>
 
