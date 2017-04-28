@@ -3,7 +3,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
-import { PsProperty, PsViewProperty, PsDescribedProperty, PsDescriptor, toViewProperty } from '../../model/ps';
+import { PsBase, PsDescriptor, PsProcessor, AbstractPsProperty, PsDescribedProperty, PsViewProperty, toViewProperty } from '../../model/ps';
 import * as validation from '../../utils/validation';
 
 // PS stands for Processing Stage
@@ -19,10 +19,10 @@ export class PsEditorComponent implements OnChanges, OnInit {
     public psDescriptor: PsDescriptor;
 
     @Input()
-    public psObject: PsProperty;
+    public psObject: PsBase;
 
     @Output()
-    public psObjectChange = new EventEmitter<PsProperty>();
+    public psObjectChange = new EventEmitter<PsDescribedProperty>();
 
     @Input()
     public tagValuesForNames: {};
@@ -31,7 +31,7 @@ export class PsEditorComponent implements OnChanges, OnInit {
 
     public showPsInfo: boolean;
 
-    public currentPsDescription: PsDescribedProperty;
+    public currentPsDescription: PsProcessor;
     public currentPsProperties: PsViewProperty[];
 
     public constructor() {
@@ -47,8 +47,8 @@ export class PsEditorComponent implements OnChanges, OnInit {
         }
     }
 
-    public psChanged(psObject: PsProperty) {
-        if(!this.psDescriptor || !(this.psDescriptor.properties)){
+    public psChanged(psObject: PsBase) {
+        if (!this.psDescriptor || !(this.psDescriptor.properties)) {
             this.currentPsProperties = [];
             return;
         }
@@ -58,20 +58,20 @@ export class PsEditorComponent implements OnChanges, OnInit {
         if (this.currentPsDescription && this.currentPsDescription.properties) {
             this.currentPsDescription.properties.forEach((propertyDescribed) => {
                 let property:PsViewProperty = toViewProperty(propertyDescribed);
-                if (property.property_type === 'object') {
+                if (property.type.toUpperCase() === 'object'.toUpperCase()) {
                     propertyDescribed.properties.forEach((subPropertyDescribed) => {
                         let subProperty: PsViewProperty = toViewProperty(subPropertyDescribed);
                         subProperty.parent_name = property.name;
                         let currentVal = _.get(psObject, subProperty.name);
                         subProperty.active = currentVal !== undefined || !subProperty.optional;
-                        subProperty.value = currentVal || this.getDefault(subProperty.property_type);
+                        subProperty.value = currentVal || this.getDefault(subProperty.type);
                         newPsProperties.push(subProperty);
                     });
                 }
                 else {
                     let currentVal = _.get(psObject, property.name);
                     property.active = currentVal !== undefined || !property.optional;
-                    property.value = currentVal || this.getDefault(property.property_type);
+                    property.value = currentVal || this.getDefault(property.type);
                     newPsProperties.push(property);
                 }
             });
@@ -95,7 +95,7 @@ export class PsEditorComponent implements OnChanges, OnInit {
     }
 
     updatePsObject() {
-        let localPsObject = new PsProperty(this.psName);
+        let localPsObject = new PsBase(this.psName);
         this.currentPsProperties.forEach(property => {
             let propertyName = property.parent_name ? property.parent_name+'.'+property.name : property.name;
             if (property.active) {

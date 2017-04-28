@@ -33,19 +33,11 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes['psProperty']) {
+        if (changes['psProperty'] || changes['tagValuesForNames']) {
             this.fieldValue = this.psProperty['value'];
             this.validate();
-        }
-        if (changes['psProperty'] || changes['tagValuesForNames']) {
-            console.log('ngOnChanges');
-            if (this.psProperty.autocomplete === 'tag_name') {
-                console.log(_.keys(this.tagValuesForNames));
-                this.suggestions = _.keys(this.tagValuesForNames);
-            }
-            else {
-                this.suggestions = [];
-            }
+            this.valueArray = []
+            this.suggestions = _.keys(this.tagValuesForNames);
         }
     }
 
@@ -54,14 +46,14 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     onPropertyInputChange() {
         this.validate();
-        if (this.psProperty.property_type !== 'array') {
+        if (this.psProperty.type.toUpperCase() !== 'array'.toUpperCase()) {
             this.psProperty.value = this.fieldValue;
             this.change.emit();
         }
     }
 
     onEnter() {
-        if (this.psProperty.property_type === 'array') {
+        if (this.psProperty.type.toUpperCase() === 'array'.toUpperCase()) {
             this.valueArray.push(this.fieldValue);
             this.psProperty.value = this.valueArray;
             this.change.emit();
@@ -76,10 +68,9 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     private getDefault(propertyType: string): any {
-        if (propertyType === 'boolean') {
+        if (propertyType.toUpperCase() === 'boolean'.toUpperCase()) {
             return false;
         }
-
         else {
             return '';
         }
@@ -87,17 +78,14 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     validate() {
-        let type = this.psProperty.property_type;
-        if (type === 'array') {
-            type = this.psProperty.element_type;
-        }
-        if (type == 'integer' && !validation.isInteger(this.fieldValue)) {
+        let type = this.psProperty.type;
+        if (type.toUpperCase() == 'int'.toUpperCase() && !validation.isInteger(this.fieldValue)) {
             this.psProperty.error = 'Invalid integer';
         }
-        else if (type == 'long' && !validation.isLong(this.fieldValue)) {
+        else if (type.toUpperCase() == 'long'.toUpperCase() && !validation.isLong(this.fieldValue)) {
             this.psProperty.error = 'Invalid long';
         }
-        else if (type == 'double' && !validation.isDouble(this.fieldValue)) {
+        else if (type.toUpperCase() == 'double'.toUpperCase() && !validation.isDouble(this.fieldValue)) {
             this.psProperty.error = 'Invalid double';
         }
         else {
@@ -111,21 +99,21 @@ export class PsFieldComponent implements OnChanges, OnInit {
             return false;
         }
         let result = false;
-        types.forEach(type => {
-            result = result || type === prop.property_type || type === prop.element_type;
-        });
+        types.forEach(type => { result = result || type.toUpperCase() === prop.type.toUpperCase(); });
         return result;
     }
 
     checkText(prop: PsViewProperty, type?: string): boolean {
-        if (!prop || ('string' !== prop.property_type && 'string' !== prop.element_type)) {
+        if (!prop)
+            return false;
+        if (prop.type.toUpperCase() === 'array'.toUpperCase()) {
+            return type === 'typeahead';
+        }
+        else if (prop.type.toUpperCase() !== 'string'.toUpperCase()) {
             return false;
         }
         else if (prop.multiline === true) {
             return type === 'multiline';
-        }
-        else if (prop.autocomplete !== undefined) {
-            return type === 'typeahead';
         }
         else {
             return true;

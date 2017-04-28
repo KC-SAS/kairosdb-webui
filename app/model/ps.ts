@@ -2,29 +2,37 @@ import * as _ from 'lodash';
 
 // ps stands for Processing Stage
 
-export class PsProperty {
+export class PsBase {
     name: string;
+    label: string;
 
     constructor(name?: string) {
         this.name = name;
     }
 }
 
-export abstract class AbstractPsProperty extends PsProperty {
-    label: string;
-    optional: boolean;
-    property_type: string;
-    element_type: string;
-    validations: any[]; // type to be defined
-    default: any;
+export class PsDescriptor extends PsBase {
+    properties: PsProcessor[];
+}
+
+export class PsProcessor extends PsBase {
     description: string;
-    options: string[];
-    autocomplete: string;
-    multiline: boolean;
+    properties: PsDescribedProperty[];
+}
+
+export abstract class AbstractPsProperty extends PsBase {
+    description?: string;
+    type?: string;
+    optional?: boolean;
+    validations?: any[]; // type to be defined
+    default_value?: any;
+    options?: string[];
+    autocomplete?: string;
+    multiline?: boolean;
 }
 
 export class PsDescribedProperty extends AbstractPsProperty {
-    properties: PsDescribedProperty[];
+    properties?: PsDescribedProperty[];
 }
 
 export class PsViewProperty extends AbstractPsProperty {
@@ -34,22 +42,13 @@ export class PsViewProperty extends AbstractPsProperty {
     error: string;
 }
 
-export class PsDescriptor {
-    properties: PsDescribedProperty[];
-    validations: any[]; // type to be defined
-    name: string;
-    description: string;
-    label: string;
-}
-
 export function toViewProperty(psDescribedProperty: PsDescribedProperty): PsViewProperty {
     let viewProperty = new PsViewProperty(psDescribedProperty.name);
     viewProperty.label = psDescribedProperty.label;
     viewProperty.optional = psDescribedProperty.optional;
-    viewProperty.property_type = psDescribedProperty.property_type;
-    viewProperty.element_type = psDescribedProperty.element_type;
+    viewProperty.type = psDescribedProperty.type;
     viewProperty.validations = _.cloneDeep(psDescribedProperty.validations);
-    viewProperty.default = psDescribedProperty.default;
+    viewProperty.default_value = psDescribedProperty.default_value;
     viewProperty.description = psDescribedProperty.description;
     viewProperty.options = _.cloneDeep(psDescribedProperty.options);
     viewProperty.autocomplete = psDescribedProperty.autocomplete;

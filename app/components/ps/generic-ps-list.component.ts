@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import * as _ from 'lodash';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import { QueryService } from '../../query.service'
-import { PsProperty, PsDescriptor } from '../../model/ps';
+import { PsBase, PsDescriptor } from '../../model/ps';
 import { PsEditorComponent } from './generic-ps-editor.component'
 
 // PS stands for Processing Stage
@@ -15,15 +15,15 @@ import { PsEditorComponent } from './generic-ps-editor.component'
 })
 export class PsListComponent implements OnChanges, OnInit {
     @Input()
-    public parsedPsObjectList: PsProperty[];
+    public parsedPsObjectList: PsBase[];
 
-    public workingPsObjectList: PsProperty[];
+    public workingPsObjectList: PsBase[];
 
-    public generatedPsObjectList: PsProperty[];
+    public generatedPsObjectList: PsBase[];
 
 
     @Output()
-    public psObjectListChange = new EventEmitter<PsProperty[]>();
+    public psObjectListChange = new EventEmitter<PsBase[]>();
 
     public selectedPsIndex: number;
 
@@ -43,8 +43,8 @@ export class PsListComponent implements OnChanges, OnInit {
         // if(changes['psDescriptor']){}
         if (changes['parsedPsObjectList']) {
             this.selectedPsIndex = undefined;
-            this.workingPsObjectList = _.map<PsProperty,PsProperty>(this.parsedPsObjectList, property => property) || [];
-            this.generatedPsObjectList = _.map<PsProperty,PsProperty>(this.parsedPsObjectList, property => property) || [];
+            this.workingPsObjectList = _.map<PsBase,PsBase>(this.parsedPsObjectList, property => property) || [];
+            this.generatedPsObjectList = _.map<PsBase,PsBase>(this.parsedPsObjectList, property => property) || [];
         }
     }
 
@@ -53,8 +53,8 @@ export class PsListComponent implements OnChanges, OnInit {
 
     addNew() {
         let defaultPsName: string = _.get<string>(this.psDescriptor,'properties[0].name');
-        this.workingPsObjectList.push(new PsProperty(defaultPsName));
-        this.generatedPsObjectList.push(new PsProperty(defaultPsName));
+        this.workingPsObjectList.push(new PsBase(defaultPsName));
+        this.generatedPsObjectList.push(new PsBase(defaultPsName));
         this.psObjectListChange.emit(this.generatedPsObjectList);
         this.selectedPsIndex = this.workingPsObjectList.length - 1;
     }
