@@ -6,7 +6,8 @@ import generator from './mocks/mock-metricnames'
 @Injectable()
 export class QueryService {
     private headers = new Headers({ 'Content-Type': 'application/json' });
-    private baseUrl = location.protocol + '//' + location.host;
+//    private baseUrl = location.protocol + '//' + location.host;
+    private baseUrl = location.protocol + '//localhost:8080';
     private metricNamesUrl = this.baseUrl + '/api/v1/metricnames';
     private tagsUrl = this.baseUrl + '/api/v1/datapoints/query/tags';
     private queryUrl = this.baseUrl + '/api/v1/datapoints/query';

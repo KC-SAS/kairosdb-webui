@@ -45,6 +45,7 @@ let descriptorList = [
                   "label":"Tags",
                   "description":"A list of tags to group by.",
                   "optional":false,
+                  "autocomplete": 'true',
                   "type":"array",
                   "options":[
 
