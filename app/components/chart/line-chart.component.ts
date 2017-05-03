@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnChanges, Input, SimpleChange } from '@angular/core';
-import moment from 'moment';
+import * as moment from 'moment';
 import * as numeral from 'numeral';
 
 @Component({

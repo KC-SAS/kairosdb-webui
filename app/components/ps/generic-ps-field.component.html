@@ -1,24 +1,24 @@
 <!-- property fields -->
 <textarea
-    *ngIf="checkField(psProperty, 'textarea')"
+    *ngIf="isValidField(psProperty, 'textarea')"
     [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()" (keyup.enter)="onEnter()"
     style="width:100%;resize:vertical;" class="form-control"
 ></textarea>
 
 <input
-    *ngIf="checkField(psProperty, 'simple_array')"
+    *ngIf="isValidField(psProperty, 'simple_array')"
     [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()" (keyup.enter)="onEnter()"
     style="width:300px;" class="form-control"
 />
 <kairos-typeahead
-    *ngIf="checkField(psProperty, 'typeahead')"
+    *ngIf="isValidField(psProperty, 'typeahead')"
     [(value)]="fieldValue" (valueChange)="onPropertyInputChange()"
     [typeaheadSource]="suggestions" [typeaheadOptionsLimit]="100" [typeaheadMinLength]="0" (typeaheadOnSelect)="onEnter();"
     class="ui-select-search"
 ></kairos-typeahead>
 
 <select
-    *ngIf="checkField(psProperty, 'select')"
+    *ngIf="isValidField(psProperty, 'select')"
     [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()" (keyup.enter)="onEnter()"
     style="width:inherit;" class="form-control"
 >
@@ -27,7 +27,7 @@
     </option>
 </select>
 
-<div *ngIf="checkField(psProperty, 'checkbox')" class="checkbox">
+<div *ngIf="isValidField(psProperty, 'checkbox')" class="checkbox">
     <label style="font-size: 1.0em">
         <input type="checkbox" value="" [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()">
         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
@@ -35,7 +35,7 @@
 </div>
 
 <input
-    *ngIf="checkField(psProperty, 'input')"
+    *ngIf="isValidField(psProperty, 'input')"
     [(ngModel)]="fieldValue" (ngModelChange)="onPropertyInputChange()" (keyup.enter)="onEnter()"
     style="width:200px;" class="form-control"
 />
@@ -44,7 +44,7 @@
 <div class="fieldValidation" *ngIf="psProperty.error">{{psProperty.error}}</div>
 
 <!-- array field -->
-<div *ngIf="checkField(psProperty, 'array')" class="well ui-select-container ui-select-multiple">
+<div *ngIf="isValidField(psProperty, 'array')" class="well ui-select-container ui-select-multiple">
     <span *ngIf="valueArray?.length === 0">Array empty,</span>
         <span class="ui-select-match">
             <span *ngFor="let a of valueArray; let idx = index">

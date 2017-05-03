@@ -25,7 +25,7 @@ export abstract class AbstractPsProperty extends PsBase {
     type?: string;
     optional?: boolean;
     validations?: any[]; // type to be defined
-    default_value?: any;
+    defaultValue?: any;
     options?: string[];
     autocomplete?: string;
     multiline?: boolean;
@@ -48,7 +48,7 @@ export function toViewProperty(psDescribedProperty: PsDescribedProperty): PsView
     viewProperty.optional = psDescribedProperty.optional;
     viewProperty.type = psDescribedProperty.type;
     viewProperty.validations = _.cloneDeep(psDescribedProperty.validations);
-    viewProperty.default_value = psDescribedProperty.default_value;
+    viewProperty.defaultValue = psDescribedProperty.defaultValue;
     viewProperty.description = psDescribedProperty.description;
     viewProperty.options = _.cloneDeep(psDescribedProperty.options);
     viewProperty.autocomplete = psDescribedProperty.autocomplete;

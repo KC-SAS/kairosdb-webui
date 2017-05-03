@@ -7,7 +7,7 @@ import { PsDescriptor } from './model/ps';
 
 let descriptorList = [
    {
-      "name":"groupby",
+      "name":"group_by",
       "label":"Group By",
       "properties":[
          {
@@ -19,7 +19,7 @@ let descriptorList = [
                   "name":"bins",
                   "label":"Bin Values",
                   "description":"List of bin values. For example, if the list of bins is 10, 20, 30, then values less than 10 are placed in the first group, values between 10-19 into the second group, and so forth.",
-                  "optional":false,
+                  "optional": false,
                   "type":"array",
                   "options":[
 
@@ -161,7 +161,7 @@ let descriptorList = [
       ]
    },
    {
-      "name":"aggregator",
+      "name":"aggregators",
       "label":"Aggregator",
       "properties":[
          {
@@ -452,7 +452,7 @@ let descriptorList = [
                   "name":"filterop",
                   "label":"Filter operation",
                   "description":"The operation performed for each data point.",
-                  "optional":false,
+                  "optional": true,
                   "type":"enum",
                   "options":[
                      "LTE",

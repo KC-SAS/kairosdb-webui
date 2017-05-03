@@ -3,6 +3,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
 import { PsViewProperty } from '../../model/ps';
+import * as property from '../../utils/property'
 import * as validation from '../../utils/validation'
 
 // PS stands for Processing Stage
@@ -34,17 +35,19 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes['psProperty'] || changes['tagValuesForNames']) {
-            this.fieldValue = this.psProperty['value'];
+            let isArray = property.isType(this.psProperty, 'array');
 
-            console.log("a,b,c,d".split(','))
+            this.fieldValue = property.getDefault(this.psProperty);
 
-            //TODO: Split not recognize => fieldValue not a string
-            if (this.fieldValue && this.isType(this.psProperty, 'array')) {
-                this.valueArray = this.fieldValue.split(',')
-                this.fieldValue = ''
+            if (isArray) {
+                this.valueArray = (this.fieldValue) ? this.fieldValue.toString().split(',') : [];
+                this.fieldValue = '';
+
+                this.suggestions = (this.psProperty.autocomplete) ? _.keys(this.tagValuesForNames) : [];
             }
+
+            this.psProperty.value = (isArray) ? this.valueArray : this.fieldValue;
             this.validate();
-            this.suggestions = _.keys(this.tagValuesForNames);
         }
     }
 
@@ -60,7 +63,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     onEnter() {
-        if (this.isType(this.psProperty, 'array')) {
+        if (property.isType(this.psProperty, 'array')) {
             if (this.fieldValue) {
                 this.valueArray.push(this.fieldValue);
                 this.psProperty.value = this.valueArray;
@@ -76,34 +79,24 @@ export class PsFieldComponent implements OnChanges, OnInit {
         this.change.emit();
     }
 
-    private isType(prop: PsViewProperty, ...types: string[]): boolean {
-        if (!prop) { return false }
-        for (var type of types) {
-            if (prop.type.toLowerCase() === type.toLowerCase()) {
-                return true
-            }
-        }
-        return false
-    }
-
-    checkField(prop: PsViewProperty, type: string): boolean {
+    isValidField(prop: PsViewProperty, type: string): boolean {
         if (!prop) { return false }
         switch (type.toLowerCase())
         {
             case 'textarea':
-                return this.isType(prop, 'string') && prop.multiline
+                return property.isType(prop, 'string') && prop.multiline
             case 'simple_array':
-                return this.isType(prop, 'array') && prop.autocomplete === undefined
+                return property.isType(prop, 'array') && prop.autocomplete === undefined
             case 'typeahead':
-                return this.isType(prop, 'array') && prop.autocomplete !== undefined
+                return property.isType(prop, 'array') && prop.autocomplete !== undefined
             case 'select':
-                return this.isType(prop, 'enum')
+                return property.isType(prop, 'enum')
             case 'checkbox':
-                return this.isType(prop, 'boolean')
+                return property.isType(prop, 'boolean')
             case 'input':
-                return !this.isType(prop, 'array', 'enum', 'boolean') && prop.multiline === undefined
+                return !property.isType(prop, 'array', 'enum', 'boolean') && prop.multiline === undefined
             case 'array':
-                return this.isType(prop, 'array')
+                return property.isType(prop, 'array')
         }
         return false
     }
@@ -124,43 +117,4 @@ export class PsFieldComponent implements OnChanges, OnInit {
         }
         // TODO use validation field
     }
-
-    private getDefault(propertyType: string): any {
-        if (propertyType.toUpperCase() === 'boolean'.toUpperCase()) {
-            return false;
-        }
-        else {
-            return '';
-        }
-
-    }
-
-    checkBasicTypes(prop: PsViewProperty, ...types: string[]): boolean {
-        if (!prop || !types) {
-            return false;
-        }
-        let result = false;
-        types.forEach(type => { result = result || type.toUpperCase() === prop.type.toUpperCase(); });
-        return result;
-    }
-
-    checkText(prop: PsViewProperty, type?: string): boolean {
-        if (!prop)
-        return false;
-        if (prop.type.toUpperCase() === 'array'.toUpperCase()) {
-            return type === 'typeahead';
-        }
-        else if (prop.type.toUpperCase() !== 'string'.toUpperCase()) {
-            return false;
-        }
-        else if (prop.multiline === true) {
-            return type === 'multiline';
-        }
-        else {
-            return true;
-        }
-
-    }
-
-
 }
