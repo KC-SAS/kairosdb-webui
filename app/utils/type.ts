@@ -16,9 +16,11 @@ export function getDefault(property: PsViewProperty): any {
     }
     switch (property.type.toLowerCase()) {
         case 'enum':
+            let defaultValue = ''
+
             if (property.options !== undefined &&
-                property.options.find(opt => opt.toLowerCase() === property.defaultValue.toString().toLowerCase()))
-                return property.defaultValue;
+                (defaultValue = property.options.find(opt => opt.toLowerCase() === property.defaultValue.toString().toLowerCase())))
+                return defaultValue;
             else
                 return (property.options !== undefined && property.options.length > 0) ? property.options[0] : ''
         case 'array':
@@ -27,4 +29,22 @@ export function getDefault(property: PsViewProperty): any {
             return property.defaultValue == 'true';
     }
     return property.defaultValue;
+}
+
+export function validate(prop: PsViewProperty, value: any) {
+    if (!prop.validations) return;
+
+    prop.validations.forEach(validation => {
+        if (validation.type.toString().toLowerCase() !== 'js'.toLowerCase()) {
+            prop.error = `Validation can't evaluate expression type [${validation.type.toString()}]`
+            return;
+        }
+
+        let res = false;
+        try { res = eval(`((value) => ${validation.expression})(${value})`); }
+        catch (e) {}
+
+        if (!res) prop.error = validation.message.toString();
+        else prop.error = '';
+    })
 }

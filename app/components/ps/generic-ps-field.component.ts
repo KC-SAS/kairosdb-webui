@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, Input, Output, SimpleChange, EventEmitter
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
-import { PsViewProperty } from '../../model/ps';
+import { PsViewProperty, PsPropertyValidation } from '../../model/ps';
 import * as type from '../../utils/type'
 import * as validation from '../../utils/validation'
 
@@ -47,7 +47,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
             }
 
             this.psProperty.value = (isArray) ? this.valueArray : this.fieldValue;
-            this.validate();
+            type.validate(this.psProperty, (type.isType(this.psProperty, 'array')) ? this.valueArray : this.fieldValue);
         }
     }
 
@@ -55,7 +55,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     onPropertyInputChange() {
-        this.validate();
+        type.validate(this.psProperty, (type.isType(this.psProperty, 'array')) ? this.valueArray : this.fieldValue);
         if (this.psProperty.type.toUpperCase() !== 'array'.toUpperCase()) {
             this.psProperty.value = this.fieldValue;
             this.change.emit();
@@ -99,22 +99,5 @@ export class PsFieldComponent implements OnChanges, OnInit {
                 return type.isType(prop, 'array')
         }
         return false
-    }
-
-    validate() {
-        let type = this.psProperty.type;
-        if (type.toUpperCase() == 'int'.toUpperCase() && !validation.isInteger(this.fieldValue)) {
-            this.psProperty.error = 'Invalid integer';
-        }
-        else if (type.toUpperCase() == 'long'.toUpperCase() && !validation.isLong(this.fieldValue)) {
-            this.psProperty.error = 'Invalid long';
-        }
-        else if (type.toUpperCase() == 'double'.toUpperCase() && !validation.isDouble(this.fieldValue)) {
-            this.psProperty.error = 'Invalid double';
-        }
-        else {
-            this.psProperty.error = undefined;
-        }
-        // TODO use validation field
     }
 }

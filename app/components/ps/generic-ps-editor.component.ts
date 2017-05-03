@@ -59,7 +59,7 @@ export class PsEditorComponent implements OnChanges, OnInit {
         if (this.currentPsDescription && this.currentPsDescription.properties) {
             this.currentPsDescription.properties.forEach((propertyDescribed) => {
                 let property:PsViewProperty = toViewProperty(propertyDescribed);
-                if (property.type.toUpperCase() === 'object'.toUpperCase()) {
+                if (type.isType(property, 'object')) {
                     propertyDescribed.properties.forEach((subPropertyDescribed) => {
                         let subProperty: PsViewProperty = toViewProperty(subPropertyDescribed);
                         subProperty.parent_name = property.name;

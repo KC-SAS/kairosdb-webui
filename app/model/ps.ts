@@ -24,7 +24,7 @@ export abstract class AbstractPsProperty extends PsBase {
     description?: string;
     type?: string;
     optional?: boolean;
-    validations?: any[]; // type to be defined
+    validations?: PsPropertyValidation[]; // type to be defined
     defaultValue?: any;
     options?: string[];
     autocomplete?: string;
@@ -40,6 +40,12 @@ export class PsViewProperty extends AbstractPsProperty {
     active: boolean;
     value: any;
     error: string;
+}
+
+export class PsPropertyValidation {
+    expression: string;
+    type: string;
+    message: string;
 }
 
 export function toViewProperty(psDescribedProperty: PsDescribedProperty): PsViewProperty {
