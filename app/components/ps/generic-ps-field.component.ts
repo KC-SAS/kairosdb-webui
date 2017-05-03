@@ -3,7 +3,7 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap'
 import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
 import { PsViewProperty } from '../../model/ps';
-import * as property from '../../utils/property'
+import * as type from '../../utils/type'
 import * as validation from '../../utils/validation'
 
 // PS stands for Processing Stage
@@ -35,9 +35,9 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes['psProperty'] || changes['tagValuesForNames']) {
-            let isArray = property.isType(this.psProperty, 'array');
+            let isArray = type.isType(this.psProperty, 'array');
 
-            this.fieldValue = property.getDefault(this.psProperty);
+            this.fieldValue = type.getDefault(this.psProperty);
 
             if (isArray) {
                 this.valueArray = (this.fieldValue) ? this.fieldValue.toString().split(',') : [];
@@ -63,7 +63,7 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     onEnter() {
-        if (property.isType(this.psProperty, 'array')) {
+        if (type.isType(this.psProperty, 'array')) {
             if (this.fieldValue) {
                 this.valueArray.push(this.fieldValue);
                 this.psProperty.value = this.valueArray;
@@ -79,24 +79,24 @@ export class PsFieldComponent implements OnChanges, OnInit {
         this.change.emit();
     }
 
-    isValidField(prop: PsViewProperty, type: string): boolean {
+    isValidField(prop: PsViewProperty, _type: string): boolean {
         if (!prop) { return false }
-        switch (type.toLowerCase())
+        switch (_type.toLowerCase())
         {
             case 'textarea':
-                return property.isType(prop, 'string') && prop.multiline
+                return type.isType(prop, 'string') && prop.multiline
             case 'simple_array':
-                return property.isType(prop, 'array') && prop.autocomplete === undefined
+                return type.isType(prop, 'array') && prop.autocomplete === undefined
             case 'typeahead':
-                return property.isType(prop, 'array') && prop.autocomplete !== undefined
+                return type.isType(prop, 'array') && prop.autocomplete !== undefined
             case 'select':
-                return property.isType(prop, 'enum')
+                return type.isType(prop, 'enum')
             case 'checkbox':
-                return property.isType(prop, 'boolean')
+                return type.isType(prop, 'boolean')
             case 'input':
-                return !property.isType(prop, 'array', 'enum', 'boolean') && prop.multiline === undefined
+                return !type.isType(prop, 'array', 'enum', 'boolean') && prop.multiline === undefined
             case 'array':
-                return property.isType(prop, 'array')
+                return type.isType(prop, 'array')
         }
         return false
     }

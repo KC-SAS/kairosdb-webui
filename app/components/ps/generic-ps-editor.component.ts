@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
 import { PsBase, PsDescriptor, PsProcessor, AbstractPsProperty, PsDescribedProperty, PsViewProperty, toViewProperty } from '../../model/ps';
+import * as type from '../../utils/type';
 import * as validation from '../../utils/validation';
 
 // PS stands for Processing Stage
@@ -64,14 +65,14 @@ export class PsEditorComponent implements OnChanges, OnInit {
                         subProperty.parent_name = property.name;
                         let currentVal = _.get(psObject, subProperty.name);
                         subProperty.active = currentVal !== undefined || !subProperty.optional;
-                        subProperty.value = currentVal || this.getDefault(subProperty.type);
+                        subProperty.value = currentVal || type.getDefault(subProperty);
                         newPsProperties.push(subProperty);
                     });
                 }
                 else {
                     let currentVal = _.get(psObject, property.name);
                     property.active = currentVal !== undefined || !property.optional;
-                    property.value = currentVal || this.getDefault(property.type);
+                    property.value = currentVal || type.getDefault(property);
                     newPsProperties.push(property);
                 }
             });
@@ -81,17 +82,6 @@ export class PsEditorComponent implements OnChanges, OnInit {
     }
 
     ngOnInit() {
-    }
-
-    private getDefault(propertyType: string): any {
-        if (propertyType === 'boolean') {
-            return false;
-        }
-
-        else {
-            return '';
-        }
-
     }
 
     updatePsObject() {
