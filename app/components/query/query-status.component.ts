@@ -81,7 +81,12 @@ export class QueryStatusComponent implements OnChanges, OnInit {
         }
         else if(this.model.response['status']>=400){
             this.errorHeader = this.model.response['status'] + " " +this.model.response['statusText'];
-            this.errorMessage = this.model.response['_body'];
+            try {
+                let jObject = JSON.parse(this.model.response['_body']);
+                this.errorMessage = (jObject.errors) ? jObject.errors : this.model.response['_body'];
+            } catch (e) {
+                this.errorMessage = this.model.response['_body'];
+            }
         }
     }
 

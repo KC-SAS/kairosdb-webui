@@ -43,7 +43,8 @@ export class PsFieldComponent implements OnChanges, OnInit {
                 this.valueArray = (this.fieldValue) ? this.fieldValue.toString().split(',') : [];
                 this.fieldValue = '';
 
-                this.suggestions = (this.psProperty.autocomplete) ? _.keys(this.tagValuesForNames) : [];
+                this.suggestions = [];
+                this.suggestions = (this.psProperty.autocomplete === "tags") ? _.keys(this.tagValuesForNames) : this.suggestions;
             }
 
             this.psProperty.value = (isArray) ? this.valueArray : this.fieldValue;
@@ -86,15 +87,15 @@ export class PsFieldComponent implements OnChanges, OnInit {
             case 'textarea':
                 return type.isType(prop, 'string') && prop.multiline
             case 'simple_array':
-                return type.isType(prop, 'array') && prop.autocomplete === undefined
+                return type.isType(prop, 'array') && !prop.autocomplete
             case 'typeahead':
-                return type.isType(prop, 'array') && prop.autocomplete !== undefined
+                return type.isType(prop, 'array') && (prop.autocomplete !== undefined && prop.autocomplete !== "")
             case 'select':
                 return type.isType(prop, 'enum')
             case 'checkbox':
                 return type.isType(prop, 'boolean')
             case 'input':
-                return !type.isType(prop, 'array', 'enum', 'boolean') && prop.multiline === undefined
+                return !type.isType(prop, 'array', 'enum', 'boolean') && !prop.multiline
             case 'array':
                 return type.isType(prop, 'array')
         }
