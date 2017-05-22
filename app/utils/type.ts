@@ -51,7 +51,6 @@ export function validate(prop: PsViewProperty, value: any) {
         try { res = eval(`((value) => ${validation.expression})(${formatted_value})`); }
         catch (e) {}
 
-        console.log(`((value) => ${validation.expression})(${formatted_value}) = ${res}`)
         if (!res) message = validation.message.toString();
     })
 
