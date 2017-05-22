@@ -38,17 +38,22 @@ export function validate(prop: PsViewProperty, value: any) {
     if (typeof value === 'string') formatted_value = `"${value}"`;
     else if (value instanceof Array) formatted_value = value.length > 0 ? `["${value.join('", "')}"]` : '[]';
 
+    let res = true;
+    let message;
     prop.validations.forEach(validation => {
         if (validation.type.toString().toLowerCase() !== 'js'.toLowerCase()) {
             prop.error = `Validation can't evaluate expression type [${validation.type.toString()}]`;
             return;
         }
 
-        let res = false;
+        if (!res) return;
+
         try { res = eval(`((value) => ${validation.expression})(${formatted_value})`); }
         catch (e) {}
 
-        if (!res) prop.error = validation.message.toString();
-        else prop.error = '';
+        console.log(`((value) => ${validation.expression})(${formatted_value}) = ${res}`)
+        if (!res) message = validation.message.toString();
     })
+
+    prop.error = (!res) ? message : '';
 }
