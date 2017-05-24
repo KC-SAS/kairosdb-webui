@@ -30,7 +30,9 @@
     [readonly]="jsonEditorDisabled"
     ></textarea>
 </div>
-<button type="button" class="btn btn-default" (click)="executeQuery()"> Graph !!! </button>
+<button type="button" class="btn btn-default" (click)="executeQuery()"> Graph </button>
+<button type="button" class="btn btn-default" (click)="executeQuery(exportToJson)"> Save as JSON </button>
+<button type="button" class="btn btn-default" (click)="executeQuery(exportToCsv)"> Save as CSV </button>
 </div>
 <div class="query-results">
     <kairos-query-status *ngIf="statusModel" [model]="statusModel"></kairos-query-status>

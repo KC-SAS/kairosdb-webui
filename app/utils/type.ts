@@ -1,4 +1,5 @@
 import { PsViewProperty } from '../model/ps';
+import * as validation from './validation';
 
 export function isType(prop: PsViewProperty, ...types: string[]): boolean {
     if (!prop) { return false }
@@ -32,14 +33,22 @@ export function getDefault(property: PsViewProperty): any {
 }
 
 export function validate(prop: PsViewProperty, value: any) {
-    if (!prop.validations) return;
+    let res = true;
+    let message = '';
+
+    if (this.isType(prop, 'integer') && !validation.isInteger(value)) message = 'This field must be an integer value.';
+    if (this.isType(prop, 'long') && !validation.isLong(value)) message = 'This field must be a long value.';
+    if (this.isType(prop, 'double') && !validation.isDouble(value)) message = 'This field must be a double value.';
+
+    prop.error = message;
+    if (prop.error.length > 0) return false;
+
+    if (!prop.validations) return true;
 
     let formatted_value = value;
     if (typeof value === 'string') formatted_value = `"${value}"`;
     else if (value instanceof Array) formatted_value = value.length > 0 ? `["${value.join('", "')}"]` : '[]';
 
-    let res = true;
-    let message;
     prop.validations.forEach(validation => {
         if (validation.type.toString().toLowerCase() !== 'js'.toLowerCase()) {
             prop.error = `Validation can't evaluate expression type [${validation.type.toString()}]`;
@@ -54,5 +63,6 @@ export function validate(prop: PsViewProperty, value: any) {
         if (!res) message = validation.message.toString();
     })
 
-    prop.error = (!res) ? message : '';
+    prop.error = message;
+    return res;
 }

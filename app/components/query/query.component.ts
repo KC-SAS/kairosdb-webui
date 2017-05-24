@@ -4,6 +4,10 @@ import { QueryService } from '../../query.service';
 import { QueryStatus } from '../../model/query-status';
 import { Query } from '../../model/query';
 
+declare function exportCsvQueryData(query: any): void;
+declare function exportJsonQueryData(query: any): void;
+
+
 @Component({
     moduleId: module.id,
     selector: 'query-builder',
@@ -57,7 +61,7 @@ export class QueryComponent implements OnInit{
         }
     }
 
-    executeQuery() {
+    executeQuery(success?: any) {
         this.queryResult = undefined;
         let startTime = new Date();
         this.statusModel = {
@@ -73,6 +77,7 @@ export class QueryComponent implements OnInit{
                     duration: new Date().getTime() - startTime.getTime(),
                     response: results
                 }
+                if (success) success(this.queryResult);
 
             },
             (error) => {
@@ -87,6 +92,14 @@ export class QueryComponent implements OnInit{
 
     toPrettyJson(object){
         return JSON.stringify(this.generatedQuery, null, 2);
+    }
+
+    exportToJson(query) {
+        exportJsonQueryData(query);
+    }
+
+    exportToCsv(query) {
+        exportCsvQueryData(query);
     }
 
 }

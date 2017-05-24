@@ -13,7 +13,7 @@
 <kairos-typeahead
     *ngIf="isValidField(psProperty, 'typeahead')"
     [(value)]="fieldValue" (valueChange)="onPropertyInputChange()"
-    [typeaheadSource]="suggestions" [typeaheadOptionsLimit]="100" [typeaheadMinLength]="0" (typeaheadOnSelect)="onEnter();"
+    [typeaheadSource]="suggestions" [typeaheadOptionsLimit]="100" [typeaheadMinLength]="0" (typeaheadOnSelect)="onEnter()"
     class="ui-select-search"
 ></kairos-typeahead>
 

@@ -56,8 +56,8 @@ export class PsFieldComponent implements OnChanges, OnInit {
     }
 
     onPropertyInputChange() {
-        type.validate(this.psProperty, (type.isType(this.psProperty, 'array')) ? this.valueArray : this.fieldValue);
-        if (this.psProperty.type.toUpperCase() !== 'array'.toUpperCase()) {
+        if (!type.validate(this.psProperty, (type.isType(this.psProperty, 'array')) ? this.valueArray : this.fieldValue)) return;
+        if (!type.isType(this.psProperty, 'array')) {
             this.psProperty.value = this.fieldValue;
             this.change.emit();
         }
@@ -65,12 +65,15 @@ export class PsFieldComponent implements OnChanges, OnInit {
 
     onEnter() {
         if (type.isType(this.psProperty, 'array')) {
-            if (this.fieldValue) {
+            let array = _.clone(this.valueArray)
+            array.push(this.fieldValue)
+            if (type.validate(this.psProperty, array)) {
                 this.valueArray.push(this.fieldValue);
                 this.psProperty.value = this.valueArray;
-                this.change.emit();
                 this.fieldValue = '';
             }
+            // console.log(this.valueArray)
+            this.change.emit();
         }
     }
 
