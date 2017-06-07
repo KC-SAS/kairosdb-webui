@@ -2,10 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-typeahead',
-    templateUrl: 'typeahead.component.html',
-    styleUrls: [ 'typeahead.component.css' ],
+    templateUrl: './typeahead.component.html',
+    styleUrls: [ './typeahead.component.css' ],
 })
 export class TypeaheadComponent {
     @Input()

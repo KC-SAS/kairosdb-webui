@@ -4,10 +4,9 @@ import * as _ from 'lodash';
 const moment = require('moment-timezone');
 
 @Component({
-  moduleId: module.id,
-  selector: 'kairos-timerange',
-  templateUrl: 'time-range.component.html',
-  styleUrls: [ 'time-range.component.css' ]
+    selector: 'kairos-timerange',
+    templateUrl: './time-range.component.html',
+    styleUrls: [ './time-range.component.css' ]
 })
 
 export class TimeRangeComponent implements OnChanges {

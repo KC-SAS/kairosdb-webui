@@ -3,10 +3,9 @@ import * as _ from 'lodash';
 import { QueryService } from '../../query.service';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-metric-list',
-    templateUrl: 'metric-list.component.html',
-    styleUrls: [ 'metric-list.component.css' ]
+    templateUrl: './metric-list.component.html',
+    styleUrls: [ './metric-list.component.css' ]
 })
 export class MetricListComponent implements OnChanges, OnInit {
     @Input()

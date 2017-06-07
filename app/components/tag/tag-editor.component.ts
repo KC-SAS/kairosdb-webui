@@ -5,10 +5,9 @@ import * as _ from 'lodash';
 import { QueryService } from '../../query.service'
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-tag-editor',
-    templateUrl: 'tag-editor.component.html',
-    styleUrls: [ 'tag-editor.component.css' ]
+    templateUrl: './tag-editor.component.html',
+    styleUrls: [ './tag-editor.component.css' ]
 })
 export class TagEditorComponent implements OnChanges, OnInit {
 

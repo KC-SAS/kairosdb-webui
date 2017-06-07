@@ -7,10 +7,11 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": ["es2015", "dom"],
-        "removeComments": false,
+        "removeComments": true,
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "typeRoots": [ "./node_modules/@types" ]
     },
     "exclude": [
         "node_modules/*",

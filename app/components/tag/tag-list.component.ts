@@ -6,9 +6,8 @@ import { QueryService } from '../../query.service'
 import { TagEditorComponent } from './tag-editor.component';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-tag-list',
-    templateUrl: 'tag-list.component.html'
+    templateUrl: './tag-list.component.html'
 })
 export class TagListComponent implements OnChanges, OnInit {
     @Input()

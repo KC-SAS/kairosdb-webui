@@ -9,10 +9,9 @@ import * as validation from '../../utils/validation'
 // PS stands for Processing Stage
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-ps-field',
-    templateUrl: 'generic-ps-field.component.html',
-    styleUrls: ['generic-ps-field.component.css']
+    templateUrl: './generic-ps-field.component.html',
+    styleUrls: ['./generic-ps-field.component.css']
 })
 export class PsFieldComponent implements OnChanges, OnInit {
     @Input()

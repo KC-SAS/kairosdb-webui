@@ -3,10 +3,9 @@ import * as moment from 'moment';
 import * as numeral from 'numeral';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-linechart',
-    templateUrl: 'line-chart.component.html',
-    styleUrls: ['line-chart.component.css']
+    templateUrl: './line-chart.component.html',
+    styleUrls: ['./line-chart.component.css']
 })
 export class LineChartComponent implements OnChanges {
 

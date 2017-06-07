@@ -2,10 +2,9 @@ import { Component, Input, Output, EventEmitter, ElementRef, OnChanges, SimpleCh
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-timepicker',
-    templateUrl: 'time-picker.component.html',
-    styleUrls: ['time-picker.component.css']
+    templateUrl: './time-picker.component.html',
+    styleUrls: ['./time-picker.component.css']
 })
 export class TimePickerComponent implements OnChanges {
 

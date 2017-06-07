@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
-    "lite": "lite-server",
+    "lite": "lite-server --baseDir=./dist",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "build": "ngc -p tsconfig.json"
+    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail"
   },
   "license": "ISC",
   "dependencies": {
@@ -35,18 +35,30 @@
     "reflect-metadata": "~0.1.10",
     "rxjs": "~5.3.0",
     "systemjs": "~0.20.12",
+    "webpack": "^2.6.1",
     "zone.js": "^0.7.2"
   },
   "devDependencies": {
+    "@angularclass/hmr-loader": "^3.0.2",
     "@types/flot": "0.0.28",
     "@types/jquery": "^2.0.34",
     "@types/lodash": "4.14.62",
     "@types/moment-timezone": "^0.2.32",
     "@types/node": "^6.0.45",
+    "angular2-template-loader": "^0.6.2",
     "concurrently": "^3.4.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "html-loader": "^0.4.5",
+    "html-webpack-plugin": "^2.28.0",
     "lite-server": "^2.3.0",
     "protractor": "^5.1.1",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.18.2",
     "tslint": "^5.0.0",
-    "typescript": "^2.2.2"
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.2.2",
+    "webpack": "^2.6.1",
+    "webpack-merge": "^4.1.0"
   }
 }

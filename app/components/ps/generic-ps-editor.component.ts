@@ -10,10 +10,9 @@ import * as validation from '../../utils/validation';
 // PS stands for Processing Stage
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-ps-editor',
-    templateUrl: 'generic-ps-editor.component.html',
-    styleUrls: [ 'generic-ps-editor.component.css' ]
+    templateUrl: './generic-ps-editor.component.html',
+    styleUrls: [ './generic-ps-editor.component.css' ]
 })
 export class PsEditorComponent implements OnChanges, OnInit {
     @Input()

@@ -8,10 +8,9 @@ import { PsEditorComponent } from './generic-ps-editor.component'
 // PS stands for Processing Stage
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-ps-list',
-    templateUrl: 'generic-ps-list.component.html',
-    styleUrls: [ 'generic-ps-list.component.css' ]
+    templateUrl: './generic-ps-list.component.html',
+    styleUrls: [ './generic-ps-list.component.css' ]
 })
 export class PsListComponent implements OnChanges, OnInit {
     @Input()

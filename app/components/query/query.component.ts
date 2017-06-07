@@ -9,10 +9,9 @@ declare function exportJsonQueryData(query: any): void;
 
 
 @Component({
-    moduleId: module.id,
     selector: 'query-builder',
-    templateUrl: 'query.component.html',
-    styleUrls: [ 'query.component.css' ]
+    templateUrl: './query.component.html',
+    styleUrls: [ './query.component.css' ]
 })
 export class QueryComponent implements OnInit{
 

@@ -4,9 +4,8 @@ const numeral = require("numeral");
 import { QueryStatus } from '../../model/query-status';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-query-status',
-    templateUrl: 'query-status.component.html'
+    templateUrl: './query-status.component.html'
 })
 export class QueryStatusComponent implements OnChanges, OnInit {
 

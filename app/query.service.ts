@@ -5,8 +5,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class QueryService {
     private headers = new Headers({ 'Content-Type': 'application/json' });
-    //    private baseUrl = location.protocol + '//' + location.host + '/api/v1';
-    private baseUrl = location.protocol + '//localhost:8080/api/v1';
+    private baseUrl = location.protocol + '//' + location.host + '/api/v1';
     private metricNamesUrl = this.baseUrl + '/metricnames';
     private tagsUrl = this.baseUrl + '/datapoints/query/tags';
     private queryUrl = this.baseUrl + '/datapoints/query';

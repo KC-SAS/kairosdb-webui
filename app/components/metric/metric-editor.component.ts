@@ -9,10 +9,9 @@ import { PsDescriptor } from '../../model/ps';
 import { TagEditorComponent } from '../tag/tag-editor.component';
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-metric-editor',
-    templateUrl: 'metric-editor.component.html',
-    styleUrls: [ 'metric-editor.component.css' ]
+    templateUrl: './metric-editor.component.html',
+    styleUrls: [ './metric-editor.component.css' ]
 })
 export class MetricEditorComponent implements OnChanges, OnInit {
 

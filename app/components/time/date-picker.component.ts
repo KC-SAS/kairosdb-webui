@@ -2,7 +2,6 @@ import {Component, Input, Output, ElementRef, EventEmitter, OnInit} from '@angul
 const moment = require('moment');
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-datepicker',
     templateUrl: 'date-picker.component.html',
     styleUrls: [ 'date-picker.component.css' ],

@@ -2,7 +2,6 @@ import {Component, Input, Output, EventEmitter, OnChanges, SimpleChange} from '@
 const moment = require('moment-timezone');
 
 @Component({
-    moduleId: module.id,
     selector: 'kairos-datetimepicker',
     templateUrl: 'datetime-picker.component.html',
     styleUrls: [ 'datetime-picker.component.css' ],
