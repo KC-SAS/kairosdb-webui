@@ -8,6 +8,7 @@ declare function exportCsvQueryData(query: any): void;
 declare function exportJsonQueryData(query: any): void;
 
 
+
 @Component({
     selector: 'query-builder',
     templateUrl: './query.component.html',
@@ -25,9 +26,13 @@ export class QueryComponent implements OnInit{
     public displayedQuery: string;
 
     public invalidJson: boolean;
+    public jsonEditorCollapsed: boolean;
+    public metricsEditorCollapsed: boolean;
 
     public constructor(private queryService: QueryService) {
         this.jsonEditorDisabled = true;
+        this.jsonEditorCollapsed = true;
+        this.metricsEditorCollapsed = false;
     }
 
     ngOnInit(){
@@ -62,7 +67,9 @@ export class QueryComponent implements OnInit{
 
     executeQuery(success?: any) {
         this.queryResult = undefined;
+        this.metricsEditorCollapsed=true;
         let startTime = new Date();
+        
         this.statusModel = {
             status: 'progress',
             response: undefined,
@@ -99,6 +106,10 @@ export class QueryComponent implements OnInit{
 
     exportToCsv(query) {
         exportCsvQueryData(query);
+    }
+
+    linkToGraph() {
+        window.open('view.html?q='+encodeURIComponent(JSON.stringify(this.generatedQuery, null, 0)),"_blank");
     }
 
 }
