@@ -25,7 +25,7 @@ function exportCsvQueryData(result) {
 				});
 			});
 
-			if (!resultSet.results.length) continue;
+			if (!resultSet.results.length) return;
 
 			var blob = new Blob([oBuilder], {type: "text/csv;charset=utf-8"});
 			saveAs(blob, resultSet.results[0].name + ".csv");
