@@ -68,6 +68,7 @@ export class QueryComponent implements OnInit{
     executeQuery(success?: any) {
         this.queryResult = undefined;
         this.metricsEditorCollapsed=true;
+        this.jsonEditorCollapsed=true;
         let startTime = new Date();
         
         this.statusModel = {
