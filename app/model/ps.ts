@@ -2,45 +2,37 @@ import * as _ from 'lodash';
 
 // ps stands for Processing Stage
 
-export class PsProperty {
+export class PsBase {
     name: string;
+    label: string;
 
     constructor(name?: string) {
         this.name = name;
     }
 }
 
-abstract class AbstractPsProperty extends PsProperty {
-    label: string;
-    optional: boolean;
-    property_type: string;
-    element_type: string;
-    validations: any[]; // type to be defined
-    default: any;
+export class PsDescriptor extends PsBase {
+    properties: PsProcessor[];
+}
+
+export class PsProcessor extends PsBase {
     description: string;
-    options: string[];
-    autocomplete: string;
-    multiline: boolean;
+    properties: PsDescribedProperty[];
+}
+
+export abstract class AbstractPsProperty extends PsBase {
+    description?: string;
+    type?: string;
+    optional?: boolean;
+    validations?: PsPropertyValidation[]; // type to be defined
+    defaultValue?: any;
+    options?: string[];
+    autocomplete?: string;
+    multiline?: boolean;
 }
 
 export class PsDescribedProperty extends AbstractPsProperty {
-    properties: PsDescribedProperty[];
-
-    toViewProperty(): PsViewProperty {
-        let viewProperty = new PsViewProperty(this.name);
-        viewProperty.label = this.label;
-        viewProperty.optional = this.optional;
-        viewProperty.property_type = this.property_type;
-        viewProperty.element_type = this.element_type;
-        viewProperty.validations = _.cloneDeep(this.validations); 
-        viewProperty.default = this.default;
-        viewProperty.description = this.description;
-        viewProperty.options = _.cloneDeep(this.options); 
-        viewProperty.autocomplete = this.autocomplete;
-        viewProperty.multiline = this.multiline;
-        return viewProperty;
-
-    }
+    properties?: PsDescribedProperty[];
 }
 
 export class PsViewProperty extends AbstractPsProperty {
@@ -50,10 +42,22 @@ export class PsViewProperty extends AbstractPsProperty {
     error: string;
 }
 
-export class PsDescriptor {
-    properties: PsDescribedProperty[];
-    validations: any[]; // type to be defined
-    name: string;
-    description: string;
-    label: string;
+export class PsPropertyValidation {
+    expression: string;
+    type: string;
+    message: string;
+}
+
+export function toViewProperty(psDescribedProperty: PsDescribedProperty): PsViewProperty {
+    let viewProperty = new PsViewProperty(psDescribedProperty.name);
+    viewProperty.label = psDescribedProperty.label;
+    viewProperty.optional = psDescribedProperty.optional;
+    viewProperty.type = psDescribedProperty.type;
+    viewProperty.validations = _.cloneDeep(psDescribedProperty.validations);
+    viewProperty.defaultValue = psDescribedProperty.defaultValue;
+    viewProperty.description = psDescribedProperty.description;
+    viewProperty.options = _.cloneDeep(psDescribedProperty.options);
+    viewProperty.autocomplete = psDescribedProperty.autocomplete;
+    viewProperty.multiline = psDescribedProperty.multiline;
+    return viewProperty;
 }

@@ -3,50 +3,13 @@ import { TypeaheadMatch } from 'ng2-bootstrap/ng2-bootstrap';
 
 @Component({
     selector: 'kairos-typeahead',
-    template: `
-	<div class="form-group has-feedback">
-		<template #customItemTemplate let-model="item" let-index="index">
-    		<div *ngIf="!typeaheadOptionsLimit || index<typeaheadOptionsLimit-1">{{model}}</div>
-			<div *ngIf="index===typeaheadOptionsLimit-1">{{model}}<div style="padding-top:5px;"><b>And others...</b></div></div>
-  		</template>
-		<input [(ngModel)]="value"
-        (ngModelChange)="valueChange.emit(value)"
-        [typeahead]="typeaheadSource"
-        [typeaheadMinLength]="typeaheadMinLength"
-        [typeaheadWaitMs]="typeaheadWaitMs"
-        [typeaheadOptionsLimit]="typeaheadOptionsLimit"
-        [typeaheadOptionField]="typeaheadOptionField"
-        [typeaheadGroupField]="typeaheadGroupField"
-        [typeaheadAsync]="typeaheadAsync"
-        [typeaheadLatinize]="typeaheadLatinize"
-        [typeaheadSingleWords]="typeaheadSingleWords"
-        [typeaheadWordDelimiters]="typeaheadWordDelimiters"
-        [typeaheadPhraseDelimiters]="typeaheadPhraseDelimiters"
-		[typeaheadItemTemplate]="customItemTemplate"
-		(typeaheadOnSelect)="typeaheadOnSelect.emit($event)"
-        (typeaheadNoResults)="typeaheadNoResults.emit($event)"
-        (typeaheadLoading)="typeaheadLoading.emit($event)"
-        (blur)="blur.emit($event)"
-		placeholder="{{placeholder}}"
-        class="form-control">
-		<i class="glyphicon glyphicon-menu-down form-control-feedback"></i>
-	</div>
-  `,
-    styles: [`
-    * >>> .dropdown-menu {
-        max-height: 200px;
-        overflow: hidden;
-        overflow-y: scroll;
-    }
-    .form-group {
-        margin-bottom: 0px;
-    }
-  `],
+    templateUrl: './typeahead.component.html',
+    styleUrls: [ './typeahead.component.css' ],
 })
 export class TypeaheadComponent {
-    @Input() 
+    @Input()
     public value: string;
-    @Output() 
+    @Output()
     public valueChange = new EventEmitter<string>();
 
     @Output()

@@ -25,14 +25,9 @@
             'rxjs': 'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
             'moment': 'npm:moment/moment.js',
-            'moment-timezone': 'npm:moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js',
+            'moment-timezone': 'npm:moment-timezone/builds/moment-timezone-with-data-2012-2022.min.js',
             'lodash': 'npm:lodash/lodash.js',
             'ng2-bootstrap/ng2-bootstrap': 'npm:ng2-bootstrap/bundles/ng2-bootstrap.umd.js',
-            'flot': 'flot/jquery.flot.min.js',
-            'flot-resize': 'flot/jquery.flot.resize.js',
-            'flot-selection': 'flot/jquery.flot.selection.js',
-            'flot-time': 'flot/jquery.flot.time.js',
-            'jquery': 'npm:jquery/dist/jquery.min.js',
             'numeral': 'npm:numeral/min/numeral.min.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
